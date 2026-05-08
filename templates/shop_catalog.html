@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Catalog: {{ shop.shop_name }} | ShopInfoHub{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Shop Header Card -->
+    <div class="card" style="margin-bottom: 4rem; padding: 0; overflow: hidden; border: none; background: transparent;">
+        <div style="display: flex; gap: 3rem; align-items: stretch; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 320px;">
+                <div class="img-wrapper" style="height: 100%; min-height: 350px; margin-bottom: 0; border-radius: var(--radius-lg);">
+                    <img src="{{ shop.shop_photo }}" alt="{{ shop.shop_name }}" class="zoomable" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80'">
+                </div>
+            </div>
+            <div style="flex: 1.5; min-width: 320px; padding: 1rem 0;">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <h1 style="font-size: 3rem; font-weight: 900; margin: 0;">{{ shop.shop_name }}</h1>
+                    {% if not shop.is_open %}
+                    <span class="badge badge-error">Closed</span>
+                    {% else %}
+                    <span class="badge badge-success">Open</span>
+                    {% endif %}
+                </div>
+                
+                <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.6;">
+                    {{ shop.description }}
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="card" style="padding: 1rem; background: rgba(255,255,255,0.03);">
+                        <div style="color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">Owner</div>
+                        <div style="font-weight: 600;">{{ shop.owner_name }}</div>
+                    </div>
+                    <div class="card" style="padding: 1rem; background: rgba(255,255,255,0.03);">
+                        <div style="color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">Address</div>
+                        <div style="font-weight: 600;">{{ shop.address }}</div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    {% if shop.map_link %}
+                    <a href="{{ shop.map_link }}" target="_blank" class="btn btn-primary">
+                        <span>🗺️</span> View on Google Maps
+                    </a>
+                    {% endif %}
+                    <div class="btn btn-outline" style="cursor: default; border-color: var(--secondary); color: var(--secondary);">
+                        <span>🛒</span> {{ products|length }} Products Available
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Catalog Section -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+        <h2 style="font-size: 2rem; font-weight: 800;">Product Catalog</h2>
+        <div style="height: 2px; flex: 1; background: var(--border); margin: 0 2rem; opacity: 0.5;"></div>
+    </div>
+
+    <div class="grid">
+        {% for product in products %}
+        <div class="card" style="display: flex; flex-direction: column;">
+            <div class="img-wrapper">
+                <img src="{{ product.product_photo }}" alt="{{ product.product_name }}" class="zoomable" onerror="this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80'">
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <div>
+                    <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;">{{ product.product_name }}</h3>
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">{{ product.quality }} Quality</p>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">₹{{ product.price }}</div>
+                    {% if product.status.lower() == 'available' %}
+                        <span class="badge badge-success" style="font-size: 0.65rem;">In Stock</span>
+                    {% else %}
+                        <span class="badge badge-error" style="font-size: 0.65rem;">{{ product.status }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <p style="color: var(--text-dim); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem; flex: 1;">
+                {{ product.details }}
+            </p>
+            
+            {% if product.voice_description %}
+            <div style="background: rgba(99, 102, 241, 0.05); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; border-left: 3px solid var(--primary);">
+                <div style="font-size: 0.75rem; color: var(--primary); font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>🎤</span> Shopkeeper's Note
+                </div>
+                <p style="font-style: italic; font-size: 0.9rem; color: var(--text);">"{{ product.voice_description }}"</p>
+            </div>
+            {% endif %}
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: auto;">
+                <div style="background: rgba(255,255,255,0.03); padding: 0.75rem; border-radius: var(--radius-sm); text-align: center;">
+                    <div style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase;">Weight</div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">{{ product.weight or 'N/A' }}</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.03); padding: 0.75rem; border-radius: var(--radius-sm); text-align: center;">
+                    <div style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase;">Stock</div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">{{ product.quantity or '0' }} units</div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 5rem 2rem;">
+            <div style="font-size: 4rem; margin-bottom: 2rem;">📦</div>
+            <h2>No products available</h2>
+            <p style="color: var(--text-muted); margin-top: 1rem;">This shop hasn't added any items to their catalog yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Direct Purchase Note -->
+    <div class="card" style="margin-top: 4rem; background: rgba(16, 185, 129, 0.05); border: 1px dashed var(--success); text-align: center; padding: 2.5rem;">
+        <h3 style="color: var(--success); margin-bottom: 1rem;">Visit the Shop to Purchase</h3>
+        <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+            ShopInfoHub provides catalog information for your convenience. To buy these products or negotiate prices, please visit the shop directly at the address mentioned above.
+        </p>
+    </div>
+</div>
+{% endblock %}

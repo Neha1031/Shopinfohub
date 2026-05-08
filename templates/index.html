@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}ShopInfoHub | Your Local Business Discovery Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero fade-in" style="padding: 8rem 2rem; background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.08), transparent 40%);">
+    <h1 style="font-size: 4rem; letter-spacing: -0.04em;">Revolutionizing <br><span>Local Discovery</span></h1>
+    <p style="max-width: 700px; margin: 2rem auto; font-size: 1.25rem; line-height: 1.7;">
+        ShopInfoHub bridge the gap between traditional shops and modern shoppers. Discover products, check live availability, and support your local community—all in one place.
+    </p>
+    <div style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 3rem;">
+        <a href="/shops" class="btn btn-primary" style="padding: 1.25rem 3rem; font-size: 1.1rem; border-radius: 1.25rem;">
+            Explore Shops Near You
+        </a>
+        <a href="/register" class="btn btn-outline" style="padding: 1.25rem 3rem; font-size: 1.1rem; border-radius: 1.25rem;">
+            List Your Business
+        </a>
+    </div>
+</div>
+
+<!-- Key Features -->
+<div style="margin-top: 6rem; text-align: center;">
+    <h2 style="font-size: 2.5rem; font-weight: 950; margin-bottom: 1rem;">Everything You Need</h2>
+    <p style="color: var(--text-muted); margin-bottom: 4rem;">Designed for both modern shoppers and traditional business owners.</p>
+    
+    <div class="grid">
+        <div class="card fade-in" style="text-align: left; padding: 3rem; background: #fff;">
+            <div style="width: 60px; height: 60px; background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center; border-radius: 1rem; font-size: 2rem; margin-bottom: 2rem;">🔍</div>
+            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 800;">Instant Search</h3>
+            <p style="color: var(--text-muted); line-height: 1.6;">Our advanced search engine lets you find products across all local stores instantly. No more walking shop to shop.</p>
+        </div>
+        <div class="card fade-in" style="text-align: left; padding: 3rem; background: #fff; animation-delay: 0.1s;">
+            <div style="width: 60px; height: 60px; background: rgba(16, 185, 129, 0.1); display: flex; align-items: center; justify-content: center; border-radius: 1rem; font-size: 2rem; margin-bottom: 2rem;">💎</div>
+            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 800;">Quality Verified</h3>
+            <p style="color: var(--text-muted); line-height: 1.6;">Check product quality, weight, and detailed descriptions provided directly by shopkeepers before you buy.</p>
+        </div>
+        <div class="card fade-in" style="text-align: left; padding: 3rem; background: #fff; animation-delay: 0.2s;">
+            <div style="width: 60px; height: 60px; background: rgba(244, 63, 94, 0.1); display: flex; align-items: center; justify-content: center; border-radius: 1rem; font-size: 2rem; margin-bottom: 2rem;">⚡</div>
+            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 800;">Real-time Status</h3>
+            <p style="color: var(--text-muted); line-height: 1.6;">Know if a shop is open or closed and if a product is in stock before you leave your home. Save time and effort.</p>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works -->
+<div style="margin-top: 10rem; padding: 6rem; background: var(--surface-alt); border-radius: var(--radius-lg);">
+    <div style="text-align: center; margin-bottom: 5rem;">
+        <h2 style="font-size: 2.5rem; font-weight: 950;">How ShopInfoHub Works</h2>
+        <p style="color: var(--text-muted);">Simple steps to start exploring or growing.</p>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 4rem;">
+        <div style="text-align: center;">
+            <div style="font-size: 1.25rem; font-weight: 900; color: var(--primary); margin-bottom: 1.5rem;">01.</div>
+            <h4 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem;">Create Account</h4>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Join as a Customer to explore or a Shopkeeper to sell.</p>
+        </div>
+        <div style="text-align: center;">
+            <div style="font-size: 1.25rem; font-weight: 900; color: var(--primary); margin-bottom: 1.5rem;">02.</div>
+            <h4 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem;">List or Discover</h4>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Shopkeepers add their stores; Customers find gems.</p>
+        </div>
+        <div style="text-align: center;">
+            <div style="font-size: 1.25rem; font-weight: 900; color: var(--primary); margin-bottom: 1.5rem;">03.</div>
+            <h4 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem;">Connect Locally</h4>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Visit the shop directly for the final purchase.</p>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

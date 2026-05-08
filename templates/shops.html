@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Explore Shops | ShopInfoHub{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; gap: 2rem; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 300px;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Explore Local Shops</h1>
+            <p style="color: var(--text-muted);">Find the best stores and products near you.</p>
+        </div>
+        
+        <form method="GET" style="flex: 1; min-width: 300px; display: flex; gap: 0.75rem;">
+            <div style="position: relative; flex: 1;">
+                <input type="text" name="q" class="form-control" placeholder="Search shops, address, products..." value="{{ search_query }}" style="padding-left: 2.75rem;">
+                <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-dim);">🔍</span>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    {% if search_query %}
+    <p style="margin-bottom: 2rem; color: var(--text-muted);">
+        Showing results for "<span style="color: var(--text); font-weight: 600;">{{ search_query }}</span>"
+    </p>
+    {% endif %}
+
+    <div class="grid">
+        {% for shop in shops %}
+        <div class="card" style="display: flex; flex-direction: column;">
+            <div class="img-wrapper">
+                <img src="{{ shop.shop_photo }}" alt="{{ shop.shop_name }}" class="zoomable" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80'">
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 700;">{{ shop.shop_name }}</h3>
+                {% if not shop.is_open %}
+                <span class="badge badge-error">Closed</span>
+                {% else %}
+                <span class="badge badge-success">Open Now</span>
+                {% endif %}
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; flex: 1;">
+                <p style="color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>📍</span> {{ shop.address }}
+                </p>
+                <p style="color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>👤</span> {{ shop.owner_name }}
+                </p>
+                <p style="color: var(--text-dim); font-size: 0.875rem; line-height: 1.5; margin-top: 0.5rem;">
+                    {{ shop.description[:120] }}{% if shop.description|length > 120 %}...{% endif %}
+                </p>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-top: auto;">
+                <a href="/shop/{{ shop.id }}" class="btn btn-primary" style="flex: 1;">View Catalog</a>
+                {% if shop.map_link %}
+                <a href="{{ shop.map_link }}" target="_blank" class="btn btn-outline" title="View on Map">🗺️</a>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 5rem 2rem;">
+            <div style="font-size: 4rem; margin-bottom: 2rem;">🏢</div>
+            <h2>No shops found</h2>
+            <p style="color: var(--text-muted); margin-top: 1rem;">We couldn't find any shops matching your criteria. Try searching for something else.</p>
+            <a href="/shops" class="btn btn-outline" style="margin-top: 2rem;">Clear Search</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

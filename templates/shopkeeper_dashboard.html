@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Shopkeeper Dashboard | ShopInfoHub{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Business Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem; gap: 2rem; flex-wrap: wrap;">
+        <div>
+            <h1 style="font-size: 3rem; font-weight: 950; color: var(--text); margin-bottom: 0.5rem;">Business Dashboard</h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem;">Welcome back, {{ name }}! You are in control of your local business.</p>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+            <a href="/addshop" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1rem; border-radius: var(--radius-lg);">
+                <span>➕</span> Add New Shop Profile
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 4rem;">
+        <div class="card" style="background: var(--surface-alt); border-left: 4px solid var(--primary); display: flex; align-items: center; gap: 1.5rem;">
+            <div style="font-size: 2.5rem;">🏪</div>
+            <div>
+                <div style="font-size: 2rem; font-weight: 900;">{{ shops|length }}</div>
+                <div style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em;">Total Shops</div>
+            </div>
+        </div>
+        <div class="card" style="background: var(--surface-alt); border-left: 4px solid var(--secondary); display: flex; align-items: center; gap: 1.5rem;">
+            <div style="font-size: 2.5rem;">✅</div>
+            <div>
+                <div style="font-size: 2rem; font-weight: 900;">{{ shops|selectattr('is_open', 'equalto', 1)|list|length }}</div>
+                <div style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em;">Currently Open</div>
+            </div>
+        </div>
+        <div class="card" style="background: var(--surface-alt); border-left: 4px solid var(--accent); display: flex; align-items: center; gap: 1.5rem;">
+            <div style="font-size: 2.5rem;">📦</div>
+            <div>
+                <div style="font-size: 2rem; font-weight: 900;">Live</div>
+                <div style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em;">Catalog Status</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Section -->
+    <div style="margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+        <h2 style="font-size: 1.75rem; font-weight: 800;">Manage Your Storefronts</h2>
+    </div>
+
+    <div class="grid">
+        {% for s in shops %}
+        <div class="card" style="display: flex; flex-direction: column; padding: 0; overflow: hidden; background: #fff; border: 1px solid var(--border);">
+            <div class="img-wrapper" style="margin-bottom: 0; border-radius: 0; border: none; height: 200px;">
+                <img src="{{ s.shop_photo }}" alt="{{ s.shop_name }}" class="zoomable" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80'">
+            </div>
+            
+            <div style="padding: 2rem; flex: 1; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1.3rem; font-weight: 800;">{{ s.shop_name }}</h3>
+                    {% if s.is_open %}
+                        <span class="badge badge-success">Open</span>
+                    {% else %}
+                        <span class="badge badge-error">Closed</span>
+                    {% endif %}
+                </div>
+                
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; line-height: 1.6; flex: 1;">
+                    📍 {{ s.address[:100] }}{% if s.address|length > 100 %}...{% endif %}
+                </p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <a href="/manage_shop/{{ s.id }}" class="btn btn-primary" style="padding: 0.75rem;">Manage Items</a>
+                    <a href="/shop/{{ s.id }}" target="_blank" class="btn btn-outline" style="padding: 0.75rem;">Public View</a>
+                </div>
+                
+                <form action="/delete_shop/{{ s.id }}" method="POST" onsubmit="return confirm('CRITICAL: This will permanently delete this shop and all products. Continue?');" style="margin-top: 1rem;">
+                    <button type="submit" class="btn btn-danger" style="width: 100%; padding: 0.6rem; font-size: 0.8rem; background: transparent; border-color: #fee2e2; color: #ef4444;">
+                        Delete Shop Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 6rem 2rem; border: 2px dashed var(--border);">
+            <div style="font-size: 5rem; margin-bottom: 2rem;">🚀</div>
+            <h2>Launch Your First Shop</h2>
+            <p style="color: var(--text-muted); margin: 1rem 0 3rem; font-size: 1.1rem; max-width: 500px; margin-inline: auto;">You haven't added any shops yet. Create your professional shop profile now to start showcasing your products to local customers.</p>
+            <a href="/addshop" class="btn btn-primary" style="padding: 1.25rem 3rem; font-size: 1.1rem;">Get Started Now</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="card" style="margin-top: 8rem; border: 1px solid #fee2e2; background: #fff; padding: 2.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 3rem; flex-wrap: wrap;">
+            <div>
+                <h3 style="color: #ef4444; font-weight: 900; font-size: 1.5rem; margin-bottom: 0.5rem;">Close Account</h3>
+                <p style="color: var(--text-muted); font-size: 1rem;">Permanently delete your shopkeeper account and all associated shop/product data.</p>
+            </div>
+            <form action="/delete_account" method="POST" onsubmit="return confirm('ABSOLUTE WARNING: This will permanently delete your account, ALL shops, and ALL products. This cannot be undone!');">
+                <button type="submit" class="btn btn-danger" style="padding: 0.875rem 2rem;">Delete Account</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

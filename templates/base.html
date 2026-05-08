@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ShopInfoHub | Find Local Shops Easily{% endblock %}</title>
+    <meta name="description" content="Discover local shops, browse catalogs, and check product availability with ShopInfoHub.">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏪</text></svg>">
+</head>
+
+<body>
+    <!-- Vibrant Background Shapes -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            🏪 <span>ShopInfoHub</span>
+        </a>
+        <div class="nav-links">
+            <a href="/shops" class="nav-link">Explore</a>
+            {% if session.get('email') %}
+                {% if session.get('role') == 'shopkeeper' %}
+                    <a href="/shopkeeper_dashboard" class="btn btn-primary">Dashboard</a>
+                {% else %}
+                    <a href="/customer_dashboard" class="btn btn-primary">My Dashboard</a>
+                {% endif %}
+                <div class="user-menu" style="display: flex; align-items: center; gap: 1rem; margin-left: 0.5rem;">
+                    <span style="color: var(--text-muted); font-size: 0.875rem;">{{ session.get('name') }}</span>
+                    <a href="/logout" class="nav-link" style="color: var(--error);">Logout</a>
+                </div>
+            {% else %}
+                <a href="/login" class="nav-link">Login</a>
+                <a href="/register" class="btn btn-primary">Get Started</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Lightbox for Fullscreen Images -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
+
+    <footer style="margin-top: 8rem; padding: 6rem 2rem; background: rgba(255,255,255,0.5); border-top: 1px solid var(--border); text-align: center; border-radius: var(--radius-lg) var(--radius-lg) 0 0;">
+        <div class="nav-brand" style="justify-content: center; margin-bottom: 1.5rem;">
+            🏪 <span>ShopInfoHub</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 1rem; max-width: 600px; margin: 0 auto 2.5rem; line-height: 1.8;">
+            Bringing the local marketplace to your fingertips. Empowering small businesses and connecting communities through technology.
+        </p>
+        <div style="color: var(--text-dim); font-size: 0.9rem; font-weight: 500;">
+            &copy; 2026 ShopInfoHub. Crafted with ❤️ for local shops.
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const lightbox = document.getElementById("lightbox");
+            const lightboxImg = document.getElementById("lightbox-img");
+            const closeBtn = document.querySelector(".lightbox-close");
+
+            // Open Lightbox
+            document.querySelectorAll(".zoomable").forEach(image => {
+                image.addEventListener("click", () => {
+                    lightboxImg.src = image.src;
+                    lightbox.classList.add("active");
+                    document.body.style.overflow = "hidden"; // Prevent scrolling
+                });
+            });
+
+            // Close Lightbox
+            const closeLightbox = () => {
+                lightbox.classList.remove("active");
+                document.body.style.overflow = "auto";
+            };
+
+            closeBtn.addEventListener("click", closeLightbox);
+            lightbox.addEventListener("click", (e) => {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+
+            // Close on Escape key
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") closeLightbox();
+            });
+        });
+    </script>
+
+</body>
+
+</html>

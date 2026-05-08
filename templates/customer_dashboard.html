@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}Discover Local | Customer Hub{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- 1. Modern Minimal Hero -->
+    <div style="text-align: center; padding: 4rem 1rem; position: relative; overflow: hidden;">
+        <div
+            style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; height: 100%; background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%); z-index: -1;">
+        </div>
+        <h1 style="font-size: 3rem; font-weight: 950; letter-spacing: -0.05em; margin-bottom: 1rem;">
+            Hello, <span style="color: var(--primary);">{{ name }}</span>
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2.5rem;">Explore the best shops in your
+            neighborhood today.</p>
+
+        <!-- Integrated Search Bar -->
+        <form method="GET"
+            style="max-width: 700px; margin: 0 auto; display: flex; gap: 0.5rem; background: #fff; padding: 0.5rem; border-radius: 1.5rem; box-shadow: var(--shadow-lg); border: 1px solid var(--border);">
+            <div style="position: relative; flex: 1;">
+                <input type="text" name="q" value="{{ search_query }}"
+                    placeholder="Search by shop name, address, or items..."
+                    style="width: 100%; border: none; padding: 1rem 1rem 1rem 3rem; font-size: 1rem; border-radius: 1rem; outline: none;">
+                <span
+                    style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); font-size: 1.2rem; opacity: 0.5;">🔍</span>
+            </div>
+            <button type="submit" class="btn btn-primary"
+                style="border-radius: 1.25rem; padding: 0 2rem;">Search</button>
+        </form>
+    </div>
+
+    <!-- 2. Quick Filters (Mock for UI feel) -->
+    <div
+        style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 3rem; overflow-x: auto; padding: 0.5rem;">
+        <div
+            style="padding: 0.6rem 1.2rem; background: #fff; border: 1px solid var(--primary); color: var(--primary); border-radius: 2rem; font-size: 0.85rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
+            ✨ All Shops</div>
+        <div
+            style="padding: 0.6rem 1.2rem; background: #fff; border: 1px solid var(--border); color: var(--text-muted); border-radius: 2rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap;">
+            🟢 Open Now</div>
+        <div
+            style="padding: 0.6rem 1.2rem; background: #fff; border: 1px solid var(--border); color: var(--text-muted); border-radius: 2rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap;">
+            🛍️ Groceries</div>
+        <div
+            style="padding: 0.6rem 1.2rem; background: #fff; border: 1px solid var(--border); color: var(--text-muted); border-radius: 2rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap;">
+            💻 Electronics</div>
+    </div>
+
+    <!-- 3. Highlighted Shopkeeper CTA (Requested) -->
+    <div class="card"
+        style="margin-bottom: 4rem; padding: 0; overflow: hidden; border: none; background: linear-gradient(135deg, #fff 0%, #f0f4ff 100%); box-shadow: 0 20px 40px rgba(0,0,0,0.05); display: flex; align-items: stretch; flex-wrap: wrap;">
+        <div style="flex: 1.2; padding: 3rem; min-width: 300px;">
+            <h2 style="font-size: 2.25rem; font-weight: 950; margin-bottom: 1rem; line-height: 1.1;">Are you a Shop
+                Owner?</h2>
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; max-width: 500px;">Take your
+                business online in minutes. Show your products to thousands of local customers and manage everything
+                from one place.</p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <form action="/upgrade_to_shopkeeper" method="POST">
+                    <button type="submit" class="btn btn-primary"
+                        style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 1rem;">Join as Shopkeeper
+                        Now</button>
+                </form>
+                <a href="/login" class="btn btn-outline"
+                    style="padding: 1rem 2.5rem; font-size: 1.1rem; border-radius: 1rem; border-color: var(--primary); color: var(--primary);">Merchant
+                    Login</a>
+            </div>
+        </div>
+        <div
+            style="flex: 1; min-width: 300px; background: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80') center/cover;">
+            <!-- Decorative Image -->
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 300px; gap: 3rem;">
+        <!-- 3. Left Content: Shop Listings -->
+        <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+                <h2 style="font-size: 1.75rem; font-weight: 900;">Featured Stores</h2>
+                <a href="/shops"
+                    style="font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">View
+                    All <span>&rarr;</span></a>
+            </div>
+
+            <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+                {% for shop in shops %}
+                <div class="card"
+                    style="padding: 0; overflow: hidden; border: none; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                    <div class="img-wrapper" style="height: 200px; margin: 0; border-radius: 0;">
+                        <img src="{{ shop.shop_photo }}" alt="{{ shop.shop_name }}" class="zoomable"
+                            onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80'">
+                        <div style="position: absolute; top: 1rem; right: 1rem; z-index: 1;">
+                            {% if shop.is_open %}
+                            <span
+                                style="background: rgba(16, 185, 129, 0.9); color: white; padding: 0.4rem 0.8rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 800; backdrop-filter: blur(5px);">OPEN</span>
+                            {% else %}
+                            <span
+                                style="background: rgba(239, 68, 68, 0.9); color: white; padding: 0.4rem 0.8rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 800; backdrop-filter: blur(5px);">CLOSED</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div style="padding: 1.5rem;">
+                        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.5rem;">{{ shop.shop_name }}
+                        </h3>
+                        <p
+                            style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.5;">
+                            📍 {{ shop.address[:60] }}{% if shop.address|length > 60 %}...{% endif %}
+                        </p>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="/shop/{{ shop.id }}" class="btn btn-primary"
+                                style="flex: 1; padding: 0.6rem; font-size: 0.85rem;">View Catalog</a>
+                            {% if shop.map_link %}
+                            <a href="{{ shop.map_link }}" target="_blank" class="btn btn-outline"
+                                style="padding: 0.6rem 1rem;">📍</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div style="grid-column: 1/-1; text-align: center; padding: 4rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                    <p style="color: var(--text-muted);">No shops found matching your search.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 4. Right Content: Sidebar -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+
+
+            <!-- Stats Card -->
+            <div class="card" style="background: #fff; border: 1px solid var(--border);">
+                <h4
+                    style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 1rem;">
+                    Market Snapshot</h4>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 600; font-size: 0.9rem;">Verified Shops</span>
+                        <span style="color: var(--primary); font-weight: 800;">{{ shops|length }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 600; font-size: 0.9rem;">Categories</span>
+                        <span style="color: var(--secondary); font-weight: 800;">12+</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div style="margin-top: 2rem; text-align: center;">
+                <form action="/delete_account" method="POST"
+                    onsubmit="return confirm('DANGER: This will permanently delete your account. Are you sure?');">
+                    <button type="submit"
+                        style="background: none; border: none; color: #f87171; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: underline;">Deactivate
+                        My Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
