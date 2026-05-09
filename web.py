@@ -34,8 +34,14 @@ def init_db():
         name VARCHAR(100),
         email VARCHAR(100),
         password VARCHAR(100),
-        role VARCHAR(20)
+        role VARCHAR(20),
+        is_deleted BOOLEAN DEFAULT FALSE
     )
+    """)
+
+    cursor.execute("""
+    ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT FALSE
     """)
 
     db.commit()
