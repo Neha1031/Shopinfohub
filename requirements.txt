@@ -1,4 +1,4 @@
 Flask
-mysql-connector-python
 gunicorn
 Werkzeug
+psycopg2-binary
