@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash
+from psycopg2.extras import RealDictCursor
 import psycopg2
 import os
 from werkzeug.utils import secure_filename
@@ -26,8 +27,7 @@ def get_db_connection():
 
 def init_db():
     db = get_db_connection()
-    cursor = db.cursor()
-
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
@@ -65,7 +65,7 @@ def register():
         role = request.form['role']
 
         db = get_db_connection()
-        cursor = db.cursor()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
         try:
             cursor.execute(
                 "INSERT INTO users(name,email,password,role) VALUES(%s,%s,%s,%s)",
@@ -89,7 +89,7 @@ def login():
         password = request.form['password']
 
         db = get_db_connection()
-        cursor = db.cursor()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
             "SELECT * FROM users WHERE email=%s AND password=%s AND is_deleted=FALSE",
             (email, password)
@@ -135,7 +135,7 @@ def addshop():
             shop_photo = request.form.get('shop_photo_url', '')
 
         db = get_db_connection()
-        cursor = db.cursor()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
             "INSERT INTO shops(shop_name,owner_name,shop_photo,address,map_link,description,user_email) VALUES(%s,%s,%s,%s,%s,%s,%s)",
             (shop_name, owner_name, shop_photo, address, map_link, description, user_email)
@@ -151,7 +151,7 @@ def addshop():
 @app.route('/shop/<int:shop_id>')
 def shop_catalog(shop_id):
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     
     # Get Shop info
     cursor.execute("SELECT * FROM shops WHERE id=%s AND is_deleted=FALSE", (shop_id,))
@@ -175,7 +175,7 @@ def list_shops():
     search_query = request.args.get('q', '')
     
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     
     if search_query:
         sql = """
@@ -204,7 +204,7 @@ def manage_shop(shop_id):
         return redirect(url_for('login'))
         
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute("SELECT * FROM shops WHERE id=%s AND user_email=%s AND is_deleted=FALSE", (shop_id, session['email']))
     shop = cursor.fetchone()
     
@@ -225,7 +225,7 @@ def addproduct(shop_id):
         return redirect(url_for('login'))
         
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute("SELECT * FROM shops WHERE id=%s AND user_email=%s", (shop_id, session['email']))
     shop = cursor.fetchone()
     
@@ -255,7 +255,7 @@ def addproduct(shop_id):
         else:
             product_photo = request.form.get('product_photo_url', '')
 
-        cursor = db.cursor()
+        cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
             "INSERT INTO products(shop_email, shop_id, product_name, product_photo, price, details, voice_description, status, quantity, weight, quality) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
             (session['email'], shop_id, product_name, product_photo, price, details, voice_desc, status, quantity, weight, quality)
@@ -275,7 +275,7 @@ def toggle_shop_status(shop_id):
         return redirect(url_for('login'))
         
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute("UPDATE shops SET is_open = NOT is_open WHERE id = %s AND user_email = %s AND is_deleted=FALSE", (shop_id, session['email']))
     db.commit()
     db.close()
@@ -292,7 +292,7 @@ def update_product_status(product_id):
     new_status = request.form['status']
     
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     
     # Ensure they own this product
     cursor.execute("SELECT shop_id FROM products WHERE id=%s AND shop_email=%s AND is_deleted=FALSE", (product_id, session['email']))
@@ -315,7 +315,7 @@ def delete_product(product_id):
         return redirect(url_for('login'))
         
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     
     # Ensure they own this product
     cursor.execute("SELECT shop_id FROM products WHERE id=%s AND shop_email=%s AND is_deleted=FALSE ", (product_id, session['email']))
@@ -338,7 +338,7 @@ def delete_shop(shop_id):
         return redirect(url_for('login'))
         
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     
     # Ensure they own this shop
     cursor.execute("SELECT id FROM shops WHERE id=%s AND user_email=%s", (shop_id, session['email']))
@@ -364,8 +364,7 @@ def delete_account():
         return redirect(url_for('login'))
         
     db = get_db_connection()
-    cursor = db.cursor()
-    # Soft delete user
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute("UPDATE users SET is_deleted = 1 WHERE email = %s", (session['email'],))
     # Soft delete all shops of this user
     cursor.execute("UPDATE shops SET is_deleted = 1 WHERE user_email = %s", (session['email'],))
@@ -385,7 +384,7 @@ def shopkeeper_dashboard():
         return redirect('/login')
 
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
 
     cursor.execute("SELECT * FROM shops WHERE user_email=%s AND is_deleted=FALSE", (session['email'],))
     shops = cursor.fetchall()
@@ -407,7 +406,7 @@ def customer_dashboard():
     search_query = request.args.get('q', '')
     
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     
     if search_query:
         sql = """
@@ -435,7 +434,7 @@ def upgrade_to_shopkeeper():
         return redirect('/login')
 
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute("UPDATE users SET role='shopkeeper' WHERE email=%s", (session['email'],))
     db.commit()
     db.close()
