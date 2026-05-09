@@ -63,3 +63,74 @@
             print("Auto-patch DB error:", e)
         finally:
             db.close() */
+
+/* def init_db():
+    pass
+    db = get_db_connection()
+    if db:
+        cursor = db.cursor()
+        try:
+            # Check products table patches
+            cursor.execute("SHOW COLUMNS FROM products LIKE 'quantity'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE products ADD COLUMN quantity INT DEFAULT 0")
+                db.commit()
+
+            cursor.execute("SHOW COLUMNS FROM products LIKE 'quality'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE products ADD COLUMN quality VARCHAR(100) DEFAULT 'Standard'")
+                db.commit()
+                
+            cursor.execute("SHOW COLUMNS FROM products LIKE 'weight'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE products ADD COLUMN weight VARCHAR(50)")
+                db.commit()
+                
+            cursor.execute("SHOW COLUMNS FROM products LIKE 'voice_description'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE products ADD COLUMN voice_description TEXT")
+                db.commit()
+
+            cursor.execute("SHOW COLUMNS FROM products LIKE 'shop_id'")
+            if not cursor.fetchone():
+                # Add shop_id
+                cursor.execute("ALTER TABLE products ADD COLUMN shop_id INT")
+                cursor.execute("ALTER TABLE products ADD FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE")
+                db.commit()
+                # Auto-migrate existing products: tie to first found shop of that user
+                cursor.execute("""
+                    UPDATE products p 
+                    JOIN shops s ON s.user_email = p.shop_email 
+                    SET p.shop_id = s.id 
+                    WHERE p.shop_id IS NULL 
+                """)
+                db.commit()
+
+            # Soft Delete columns
+            cursor.execute("SHOW COLUMNS FROM users LIKE 'is_deleted'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE users ADD COLUMN is_deleted BOOLEAN DEFAULT 0")
+                db.commit()
+
+            cursor.execute("SHOW COLUMNS FROM shops LIKE 'is_deleted'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE shops ADD COLUMN is_deleted BOOLEAN DEFAULT 0")
+                db.commit()
+
+            cursor.execute("SHOW COLUMNS FROM products LIKE 'is_deleted'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE products ADD COLUMN is_deleted BOOLEAN DEFAULT 0")
+                db.commit()
+
+            # Increase length for photo columns
+            cursor.execute("ALTER TABLE shops MODIFY COLUMN shop_photo LONGTEXT")
+            cursor.execute("ALTER TABLE products MODIFY COLUMN product_photo LONGTEXT")
+            db.commit()
+                
+        except Exception as e:
+            print("Auto-patch DB error:", e)
+        finally:
+            db.close()
+
+# Run DB checks on startup
+init_db() */
