@@ -67,7 +67,7 @@ def login():
         password = request.form['password']
 
         db = get_db_connection()
-        cursor = db.cursor(dictionary=True)
+        cursor = db.cursor()
         cursor.execute(
             "SELECT * FROM users WHERE email=%s AND password=%s AND is_deleted=0",
             (email, password)
@@ -129,7 +129,7 @@ def addshop():
 @app.route('/shop/<int:shop_id>')
 def shop_catalog(shop_id):
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     
     # Get Shop info
     cursor.execute("SELECT * FROM shops WHERE id=%s AND is_deleted=0", (shop_id,))
@@ -153,7 +153,7 @@ def list_shops():
     search_query = request.args.get('q', '')
     
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     
     if search_query:
         sql = """
@@ -182,7 +182,7 @@ def manage_shop(shop_id):
         return redirect(url_for('login'))
         
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT * FROM shops WHERE id=%s AND user_email=%s AND is_deleted=0", (shop_id, session['email']))
     shop = cursor.fetchone()
     
@@ -203,7 +203,7 @@ def addproduct(shop_id):
         return redirect(url_for('login'))
         
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT * FROM shops WHERE id=%s AND user_email=%s", (shop_id, session['email']))
     shop = cursor.fetchone()
     
@@ -270,7 +270,7 @@ def update_product_status(product_id):
     new_status = request.form['status']
     
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     
     # Ensure they own this product
     cursor.execute("SELECT shop_id FROM products WHERE id=%s AND shop_email=%s AND is_deleted=0", (product_id, session['email']))
@@ -293,7 +293,7 @@ def delete_product(product_id):
         return redirect(url_for('login'))
         
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     
     # Ensure they own this product
     cursor.execute("SELECT shop_id FROM products WHERE id=%s AND shop_email=%s AND is_deleted=0", (product_id, session['email']))
@@ -316,7 +316,7 @@ def delete_shop(shop_id):
         return redirect(url_for('login'))
         
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     
     # Ensure they own this shop
     cursor.execute("SELECT id FROM shops WHERE id=%s AND user_email=%s", (shop_id, session['email']))
@@ -363,7 +363,7 @@ def shopkeeper_dashboard():
         return redirect('/login')
 
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
 
     cursor.execute("SELECT * FROM shops WHERE user_email=%s AND is_deleted=0", (session['email'],))
     shops = cursor.fetchall()
@@ -385,7 +385,7 @@ def customer_dashboard():
     search_query = request.args.get('q', '')
     
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     
     if search_query:
         sql = """
