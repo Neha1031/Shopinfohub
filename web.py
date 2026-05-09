@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash
-import mysql.connector
+import psycopg2
 import os
 from werkzeug.utils import secure_filename
 
@@ -13,11 +13,12 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def get_db_connection():
     try:
-        return mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Neha@1031",   # user password
-            database="shopinfo"
+        return psycopg2.connect(
+            host="dpg-d7vf60tckfvc73ei03a0-a",
+            database="shopinfo_hnh0",
+            user="shopuser",
+            password="Mmdr7JSYuKPmVvBUmv0jyZoSHb5LbOUE",
+            port="5432"
         )
     except Exception as e:
         print("Database connection error:", e)
