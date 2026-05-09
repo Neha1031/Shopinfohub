@@ -91,7 +91,7 @@ def login():
         db = get_db_connection()
         cursor = db.cursor()
         cursor.execute(
-            "SELECT * FROM users WHERE email=%s AND password=%s AND is_deleted=0",
+            "SELECT * FROM users WHERE email=%s AND password=%s AND is_deleted=FALSE",
             (email, password)
         )
         user = cursor.fetchone()
@@ -154,7 +154,7 @@ def shop_catalog(shop_id):
     cursor = db.cursor()
     
     # Get Shop info
-    cursor.execute("SELECT * FROM shops WHERE id=%s AND is_deleted=0", (shop_id,))
+    cursor.execute("SELECT * FROM shops WHERE id=%s AND is_deleted=FALSE", (shop_id,))
     shop_info = cursor.fetchone()
     
     if not shop_info:
@@ -162,7 +162,7 @@ def shop_catalog(shop_id):
         return "Shop not found", 404
         
     # Get products for THIS specific shop
-    cursor.execute("SELECT * FROM products WHERE shop_id=%s AND is_deleted=0", (shop_id,))
+    cursor.execute("SELECT * FROM products WHERE shop_id=%s AND is_deleted=FALSE", (shop_id,))
     products = cursor.fetchall()
     
     db.close()
@@ -190,7 +190,7 @@ def list_shops():
         val = f"%{search_query}%"
         cursor.execute(sql, (val, val, val))
     else:
-        cursor.execute("SELECT * FROM shops WHERE is_deleted=0")
+        cursor.execute("SELECT * FROM shops WHERE is_deleted=FALSE")
         
     data = cursor.fetchall()
     db.close()
@@ -205,14 +205,14 @@ def manage_shop(shop_id):
         
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM shops WHERE id=%s AND user_email=%s AND is_deleted=0", (shop_id, session['email']))
+    cursor.execute("SELECT * FROM shops WHERE id=%s AND user_email=%s AND is_deleted=FALSE", (shop_id, session['email']))
     shop = cursor.fetchone()
     
     if not shop:
         db.close()
         return "Not authorized to manage this shop or it does not exist.", 403
         
-    cursor.execute("SELECT * FROM products WHERE shop_id=%s AND is_deleted=0", (shop_id,))
+    cursor.execute("SELECT * FROM products WHERE shop_id=%s AND is_deleted=FALSE", (shop_id,))
     products = cursor.fetchall()
     db.close()
     
@@ -276,7 +276,7 @@ def toggle_shop_status(shop_id):
         
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("UPDATE shops SET is_open = NOT is_open WHERE id = %s AND user_email = %s AND is_deleted=0", (shop_id, session['email']))
+    cursor.execute("UPDATE shops SET is_open = NOT is_open WHERE id = %s AND user_email = %s AND is_deleted=FALSE", (shop_id, session['email']))
     db.commit()
     db.close()
     
@@ -295,7 +295,7 @@ def update_product_status(product_id):
     cursor = db.cursor()
     
     # Ensure they own this product
-    cursor.execute("SELECT shop_id FROM products WHERE id=%s AND shop_email=%s AND is_deleted=0", (product_id, session['email']))
+    cursor.execute("SELECT shop_id FROM products WHERE id=%s AND shop_email=%s AND is_deleted=FALSE", (product_id, session['email']))
     prod = cursor.fetchone()
     
     if prod:
@@ -318,11 +318,11 @@ def delete_product(product_id):
     cursor = db.cursor()
     
     # Ensure they own this product
-    cursor.execute("SELECT shop_id FROM products WHERE id=%s AND shop_email=%s AND is_deleted=0", (product_id, session['email']))
+    cursor.execute("SELECT shop_id FROM products WHERE id=%s AND shop_email=%s AND is_deleted=FALSE ", (product_id, session['email']))
     prod = cursor.fetchone()
     
     if prod:
-        cursor.execute("UPDATE products SET is_deleted=1 WHERE id=%s", (product_id,))
+        cursor.execute("UPDATE products SET is_deleted=TRUE  WHERE id=%s", (product_id,))
         db.commit()
         flash("Product deleted successfully!", "success")
         db.close()
@@ -346,9 +346,9 @@ def delete_shop(shop_id):
     
     if shop:
         # Soft delete shop
-        cursor.execute("UPDATE shops SET is_deleted=1 WHERE id=%s", (shop_id,))
+        cursor.execute("UPDATE shops SET is_deleted=TRUE WHERE id=%s", (shop_id,))
         # Soft delete all products of this shop
-        cursor.execute("UPDATE products SET is_deleted=1 WHERE shop_id=%s", (shop_id,))
+        cursor.execute("UPDATE products SET is_deleted=TRUE WHERE shop_id=%s", (shop_id,))
         db.commit()
         flash("Shop deleted successfully!", "success")
         db.close()
@@ -387,7 +387,7 @@ def shopkeeper_dashboard():
     db = get_db_connection()
     cursor = db.cursor()
 
-    cursor.execute("SELECT * FROM shops WHERE user_email=%s AND is_deleted=0", (session['email'],))
+    cursor.execute("SELECT * FROM shops WHERE user_email=%s AND is_deleted=FALSE", (session['email'],))
     shops = cursor.fetchall()
     
     db.close()
@@ -422,7 +422,7 @@ def customer_dashboard():
         val = f"%{search_query}%"
         cursor.execute(sql, (val, val, val))
     else:
-        cursor.execute("SELECT * FROM shops WHERE is_deleted=0")
+        cursor.execute("SELECT * FROM shops WHERE is_deleted=FALSE")
         
     all_shops = cursor.fetchall()
     db.close()
