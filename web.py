@@ -25,7 +25,23 @@ def get_db_connection():
         return None
 
 def init_db():
-    pass
+    db = get_db_connection()
+    cursor = db.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100),
+        email VARCHAR(100),
+        password VARCHAR(100),
+        role VARCHAR(20)
+    )
+    """)
+
+    db.commit()
+    cursor.close()
+    db.close()
+
 init_db()
 
 # Home / Public Dashboard
