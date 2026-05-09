@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Account | ShopInfoHub{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="form-card" style="margin-top: 2rem; max-width: 520px;">
+        <div style="text-align: center; margin-bottom: 2.5rem;">
+            <div style="font-size: 3rem; margin-bottom: 1.5rem;">🚀</div>
+            <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">Get Started</h1>
+            <p style="color: var(--text-muted);">Join the community and explore local shops</p>
+        </div>
+
+        <form method="POST" action="/register">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <div style="position: relative;">
+                    <input type="text" id="name" name="name" class="form-control" required placeholder="John Doe" style="padding-left: 2.75rem;">
+                    <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-dim);">👤</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <div style="position: relative;">
+                    <input type="email" id="email" name="email" class="form-control" required placeholder="name@example.com" style="padding-left: 2.75rem;">
+                    <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-dim);">📧</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div style="position: relative;">
+                    <input type="password" id="password" name="password" class="form-control" required minlength="6" placeholder="Minimum 6 characters" style="padding-left: 2.75rem;">
+                    <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-dim);">🔒</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="role">Select Your Purpose</label>
+                <div style="position: relative;">
+                    <select id="role" name="role" class="form-control" required style="padding-left: 2.75rem; appearance: none;">
+                        <option value="customer">I want to find shops (Customer)</option>
+                        <option value="shopkeeper">I want to list my shop (Shopkeeper)</option>
+                    </select>
+                    <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-dim);">🎯</span>
+                    <span style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-dim); pointer-events: none;">▼</span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; padding: 1rem;">
+                Create Account
+            </button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 2rem;">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                Already have an account? <a href="/login" style="font-weight: 700; color: var(--primary);">Sign in here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

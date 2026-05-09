@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Shop | ShopInfoHub{% endblock %}
+
+{% block content %}
+<style>
+.form-group {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+</style>
+<div class="fade-in">
+    <div class="form-card" style="max-width: 700px; margin-top: 2rem;">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <div style="font-size: 3.5rem; margin-bottom: 1rem;">🏢</div>
+            <h1 style="font-size: 2.25rem; font-weight: 900; margin-bottom: 0.5rem;">Create Your Shop Profile</h1>
+            <p style="color: var(--text-muted);">Set up your digital storefront and reach local customers.</p>
+        </div>
+
+        <form method="POST" action="/addshop" enctype="multipart/form-data">
+            <!-- 1. Identity -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label for="shop_name">Shop Name</label>
+                    <input type="text" id="shop_name" name="shop_name" class="form-control" required placeholder="e.g., Sunshine Groceries">
+                </div>
+                
+                <div class="form-group">
+                    <label for="owner_name">Owner Name</label>
+                    <input type="text" id="owner_name" name="owner_name" class="form-control" required placeholder="Full Name">
+                </div>
+            </div>
+
+            <!-- 2. Details (Moved up as requested) -->
+            <div class="form-group">
+                <label for="description">About Your Shop</label>
+                <textarea id="description" name="description" class="form-control" rows="4" placeholder="Describe your specialty, business hours, and what makes your shop unique..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Full Shop Address</label>
+                <textarea id="address" name="address" class="form-control" rows="3" required placeholder="Street name, landmark, city..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="map_link">Google Maps Link (Optional)</label>
+                <div style="position: relative;">
+                    <input type="text" id="map_link" name="map_link" class="form-control" placeholder="https://maps.google.com/..." style="padding-left: 3rem;">
+                    <span style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-dim);">📍</span>
+                </div>
+            </div>
+            
+            <!-- 3. Visuals -->
+            <div class="form-group" style="background: var(--surface-alt); padding: 2rem; border-radius: var(--radius); border: 1px dashed var(--border);">
+                <label>Shop Storefront Photo</label>
+                <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                    <input type="file" id="shop_photo_file" name="shop_photo_file" class="form-control" accept="image/*" style="padding: 0.5rem; background: #fff;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="height: 1px; flex: 1; background: var(--border);"></div>
+                        <span style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800;">OR PASTE LINK</span>
+                        <div style="height: 1px; flex: 1; background: var(--border);"></div>
+                    </div>
+                    <input type="text" id="shop_photo_url" name="shop_photo_url" class="form-control" placeholder="https://example.com/shop-image.jpg">
+                </div>
+                <p style="color: var(--text-dim); font-size: 0.8rem; margin-top: 1rem;">✨ High-quality photos help your shop stand out!</p>
+            </div>
+
+            <div style="display: flex; gap: 1.5rem; margin-top: 3rem;">
+                <a href="/shopkeeper_dashboard" class="btn btn-outline" style="flex: 1;">Cancel</a>
+                <button type="submit" class="btn btn-primary" style="flex: 2; padding: 1.25rem;">Create Shop Profile</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

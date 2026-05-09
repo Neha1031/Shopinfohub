@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Product | ShopInfoHub{% endblock %}
+
+{% block content %}
+<style>
+.form-group {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+</style>
+<div class="fade-in">
+    <div class="form-card" style="max-width: 800px; margin-top: 2rem;">
+        <div style="text-align: center; margin-bottom: 3rem;">
+            <div style="font-size: 3.5rem; margin-bottom: 1rem;">📦</div>
+            <h1 style="font-size: 2.25rem; font-weight: 900; margin-bottom: 0.5rem;">Add New Product</h1>
+            <p style="color: var(--text-muted);">Adding to catalog: <span style="color: var(--primary); font-weight: 700;">{{ shop.shop_name }}</span></p>
+        </div>
+
+        <form method="POST" action="/addproduct/{{ shop.id }}" enctype="multipart/form-data">
+            <!-- 1. Basic Info -->
+            <div class="form-group">
+                <label for="product_name">Product Name</label>
+                <input type="text" id="product_name" name="product_name" class="form-control" required placeholder="e.g., Organic Basmati Rice">
+            </div>
+
+            <!-- 2. Detailed Description (Moved up as requested) -->
+            <div class="form-group">
+                <label for="voice_description">Product Full Description</label>
+                <textarea id="voice_description" name="voice_description" class="form-control" rows="4" placeholder="Tell your customers everything about this product (features, benefits, etc.)"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="details">Short Summary / Highlights</label>
+                <input type="text" id="details" name="details" class="form-control" placeholder="Key highlights (e.g. 100% Organic, 1 Year Warranty)">
+            </div>
+            
+            <!-- 3. Visuals -->
+            <div class="form-group" style="background: var(--surface-alt); padding: 2rem; border-radius: var(--radius); border: 1px dashed var(--border);">
+                <label>Product Photo</label>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <input type="file" id="product_photo_file" name="product_photo_file" class="form-control" accept="image/*" style="padding: 0.5rem; background: #fff;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="height: 1px; flex: 1; background: var(--border);"></div>
+                        <span style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800;">OR PASTE LINK</span>
+                        <div style="height: 1px; flex: 1; background: var(--border);"></div>
+                    </div>
+                    <input type="text" id="product_photo_url" name="product_photo_url" class="form-control" placeholder="https://example.com/image.jpg">
+                </div>
+            </div>
+            
+            <!-- 4. Specifications Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+                <div class="form-group">
+                    <label for="price">Price (₹)</label>
+                    <div style="position: relative;">
+                        <input type="number" id="price" name="price" class="form-control" required min="0" step="0.01" placeholder="0.00" style="padding-left: 3rem;">
+                        <span style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-weight: 800;">₹</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="status">Availability</label>
+                    <select id="status" name="status" class="form-control">
+                        <option value="Available" selected>Available</option>
+                        <option value="Out of Stock">Out of Stock</option>
+                        <option value="Pre-order">Pre-order</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                <div class="form-group">
+                    <label for="quantity">Stock Qty</label>
+                    <input type="number" id="quantity" name="quantity" class="form-control" min="0" placeholder="e.g., 50">
+                </div>
+                <div class="form-group">
+                    <label for="weight">Weight/Size</label>
+                    <input type="text" id="weight" name="weight" class="form-control" placeholder="e.g., 5 kg">
+                </div>
+                <div class="form-group">
+                    <label for="quality">Quality</label>
+                    <select id="quality" name="quality" class="form-control">
+                        <option value="Premium">Premium</option>
+                        <option value="Standard" selected>Standard</option>
+                        <option value="Budget">Budget</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1.5rem; margin-top: 3rem;">
+                <a href="/manage_shop/{{ shop.id }}" class="btn btn-outline" style="flex: 1;">Cancel</a>
+                <button type="submit" class="btn btn-primary" style="flex: 2; padding: 1.25rem;">Add to Catalog</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
