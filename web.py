@@ -60,6 +60,11 @@ def init_db():
     """)
 
     cursor.execute("""
+    ALTER TABLE shops
+    ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT FALSE
+    """)
+
+    cursor.execute("""
     CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
     shop_email VARCHAR(255),
@@ -74,6 +79,11 @@ def init_db():
     weight VARCHAR(50),
     quality VARCHAR(100) DEFAULT 'Standard'
     )
+    """)
+
+    cursor.execute("""
+    ALTER TABLE products
+    ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT FALSE
     """)
 
     db.commit()
