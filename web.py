@@ -139,7 +139,22 @@ init_db()
 # Home / Public Dashboard
 @app.route('/')
 def home():
-    return render_template('index.html')
+    db = get_db_connection()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    
+    # Fetch random products for the product dashboard
+    cursor.execute("""
+        SELECT p.*, s.shop_name 
+        FROM products p
+        JOIN shops s ON p.shop_id = s.id
+        WHERE p.is_deleted = FALSE AND s.is_deleted = FALSE
+        ORDER BY RANDOM() 
+        LIMIT 6
+    """)
+    random_products = cursor.fetchall()
+    db.close()
+    
+    return render_template('index.html', random_products=random_products)
 
 # Register
 @app.route('/register', methods=['GET', 'POST'])
@@ -542,40 +557,61 @@ def logout():
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
 
-@app.route('/search_products')
-def search_products():
+# Product Details - PUBLIC
+@app.route('/product/<int:product_id>')
+def product_detail(product_id):
+    db = get_db_connection()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    
+    cursor.execute("""
+        SELECT p.*, s.shop_name, s.address, s.map_link, s.city, s.area
+        FROM products p
+        JOIN shops s ON p.shop_id = s.id
+        WHERE p.id = %s AND p.is_deleted = FALSE AND s.is_deleted = FALSE
+    """, (product_id,))
+    product = cursor.fetchone()
+    
+    db.close()
+    
+    if not product:
+        return "Product not found", 404
+        
+    return render_template('product_detail.html', product=product)
 
+# Unified Search (Shops and Products) - PUBLIC
+@app.route('/search')
+def search():
     q = request.args.get('q', '')
+    
+    if not q:
+        return redirect(url_for('home'))
 
     db = get_db_connection()
     cursor = db.cursor(cursor_factory=RealDictCursor)
 
-    sql = """
-    SELECT p.*, s.shop_name, s.address
-    FROM products p
-    JOIN shops s ON p.shop_id = s.id
-    WHERE (
-        p.product_name ILIKE %s
-        OR p.details ILIKE %s
-        OR s.shop_name ILIKE %s
-        OR s.address ILIKE %s
-        OR s.city ILIKE %s
-        OR s.area ILIKE %s
-    )
-    AND p.is_deleted = FALSE
-    AND s.is_deleted = FALSE
+    # Search Shops
+    shop_sql = """
+        SELECT * FROM shops
+        WHERE (
+            shop_name ILIKE %s OR address ILIKE %s OR city ILIKE %s OR area ILIKE %s
+        ) AND is_deleted = FALSE
     """
-
     val = f"%{q}%"
+    cursor.execute(shop_sql, (val, val, val, val))
+    shops = cursor.fetchall()
 
-    cursor.execute(sql, (val, val, val, val, val, val))
-
+    # Search Products
+    product_sql = """
+        SELECT p.*, s.shop_name, s.address 
+        FROM products p
+        JOIN shops s ON p.shop_id = s.id
+        WHERE (
+            p.product_name ILIKE %s OR p.details ILIKE %s OR s.shop_name ILIKE %s
+        ) AND p.is_deleted = FALSE AND s.is_deleted = FALSE
+    """
+    cursor.execute(product_sql, (val, val, val))
     products = cursor.fetchall()
 
     db.close()
 
-    return render_template(
-        'search_products.html',
-        products=products,
-        search_query=q
-    )
+    return render_template('search_results.html', query=q, shops=shops, products=products)

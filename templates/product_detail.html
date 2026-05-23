@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.product_name }} - ShopInfoHub{% endblock %}
+
+{% block content %}
+<div style="margin-top: 4rem;">
+    <a href="javascript:history.back()" class="btn btn-outline" style="margin-bottom: 2rem; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem;">
+        &larr; Back
+    </a>
+
+    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;">
+        <!-- Product Image -->
+        <div style="border-radius: var(--radius-lg); overflow: hidden; background: var(--surface-alt); aspect-ratio: 4/3; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+            {% if product.product_photo %}
+                <img src="{{ product.product_photo }}" alt="{{ product.product_name }}" class="zoomable" style="width: 100%; height: 100%; object-fit: cover; cursor: zoom-in;">
+            {% else %}
+                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 5rem;">📦</div>
+            {% endif %}
+        </div>
+
+        <!-- Product Details -->
+        <div>
+            <div style="display: inline-block; padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; font-weight: 700; margin-bottom: 1rem;
+                {% if product.status == 'Available' %}background: rgba(16, 185, 129, 0.1); color: var(--success);{% else %}background: rgba(244, 63, 94, 0.1); color: var(--error);{% endif %}">
+                {{ product.status }}
+            </div>
+            
+            <h1 style="font-size: 3rem; font-weight: 900; margin-bottom: 1rem; line-height: 1.1;">{{ product.product_name }}</h1>
+            
+            <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary); margin-bottom: 2rem;">
+                ₹{{ product.price }}
+            </div>
+
+            <div style="background: var(--surface-alt); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 2rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text);">About this product</h3>
+                <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 0;">{{ product.details or 'No details provided.' }}</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                    <div>
+                        <span style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Weight</span>
+                        <span style="font-weight: 600;">{{ product.weight or 'N/A' }}</span>
+                    </div>
+                    <div>
+                        <span style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">Quality</span>
+                        <span style="font-weight: 600;">{{ product.quality or 'Standard' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shop Info Card -->
+            <div style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Sold by</h3>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <div style="font-weight: 800; font-size: 1.25rem; margin-bottom: 0.25rem;">🏪 {{ product.shop_name }}</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem;">
+                            {{ product.address }}
+                            {% if product.area %}, {{ product.area }}{% endif %}
+                            {% if product.city %}, {{ product.city }}{% endif %}
+                        </div>
+                    </div>
+                    <a href="/shop/{{ product.shop_id }}" class="btn btn-primary" style="padding: 0.75rem 1.5rem; border-radius: 1rem;">Visit Shop</a>
+                </div>
+                {% if product.map_link %}
+                <div style="margin-top: 1rem;">
+                    <a href="{{ product.map_link }}" target="_blank" class="btn btn-outline" style="width: 100%; display: block; text-align: center; border-radius: 1rem; padding: 0.5rem;">📍 View on Map</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

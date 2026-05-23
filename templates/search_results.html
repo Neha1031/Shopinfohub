@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results for "{{ query }}" - ShopInfoHub{% endblock %}
+
+{% block content %}
+<div style="margin-top: 4rem;">
+    <!-- Search Header -->
+    <div style="text-align: center; margin-bottom: 4rem;">
+        <h1 style="font-size: 3rem; font-weight: 900; margin-bottom: 1rem;">Search Results</h1>
+        <p style="color: var(--text-muted); font-size: 1.25rem;">Showing results for: <span style="font-weight: 700; color: var(--text);">"{{ query }}"</span></p>
+        
+        <form action="/search" method="GET" style="display: flex; gap: 0.5rem; max-width: 600px; margin: 2rem auto 0; background: #fff; padding: 0.5rem; border-radius: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border);">
+            <input type="text" name="q" value="{{ query }}" required style="flex: 1; border: none; outline: none; padding: 0.75rem 1.5rem; font-size: 1.1rem; border-radius: 2rem; background: transparent;">
+            <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem; border-radius: 2rem;">Search</button>
+        </form>
+    </div>
+
+    <!-- Products Section -->
+    {% if products %}
+    <div style="margin-bottom: 5rem;">
+        <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
+            Matching Products
+            <span style="font-size: 1rem; font-weight: 600; color: var(--primary); background: rgba(99, 102, 241, 0.1); padding: 0.25rem 1rem; border-radius: 1rem;">{{ products|length }} found</span>
+        </h2>
+        
+        <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+            {% for product in products %}
+            <a href="/product/{{ product.id }}" style="text-decoration: none; color: inherit; display: block;" class="card fade-in">
+                <div style="border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1.5rem; aspect-ratio: 4/3; background: var(--surface-alt);">
+                    {% if product.product_photo %}
+                        <img src="{{ product.product_photo }}" alt="{{ product.product_name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 3rem;">📦</div>
+                    {% endif %}
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                    <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0;">{{ product.product_name }}</h3>
+                    <span style="font-weight: 800; color: var(--primary); font-size: 1.2rem;">₹{{ product.price }}</span>
+                </div>
+                <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    🏪 {{ product.shop_name }}
+                </div>
+                <div style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; 
+                    {% if product.status == 'Available' %}background: rgba(16, 185, 129, 0.1); color: var(--success);{% else %}background: rgba(244, 63, 94, 0.1); color: var(--error);{% endif %}">
+                    {{ product.status }}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Shops Section -->
+    {% if shops %}
+    <div style="margin-bottom: 5rem;">
+        <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
+            Matching Shops
+            <span style="font-size: 1rem; font-weight: 600; color: var(--primary); background: rgba(99, 102, 241, 0.1); padding: 0.25rem 1rem; border-radius: 1rem;">{{ shops|length }} found</span>
+        </h2>
+        
+        <div class="grid">
+            {% for shop in shops %}
+            <div class="card fade-in">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1.5rem; font-weight: 800; margin: 0;">🏪 {{ shop.shop_name }}</h3>
+                    <div style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; 
+                        {% if shop.is_open %}background: rgba(16, 185, 129, 0.1); color: var(--success);{% else %}background: rgba(244, 63, 94, 0.1); color: var(--error);{% endif %}">
+                        {% if shop.is_open %}Open{% else %}Closed{% endif %}
+                    </div>
+                </div>
+                
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 0.5rem;">
+                    📍 <span>{{ shop.address }}{% if shop.area %}, {{ shop.area }}{% endif %}{% if shop.city %}, {{ shop.city }}{% endif %}</span>
+                </p>
+                
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <a href="/shop/{{ shop.id }}" class="btn btn-primary" style="flex: 1; text-align: center;">Visit Catalog</a>
+                    {% if shop.map_link %}
+                    <a href="{{ shop.map_link }}" target="_blank" class="btn btn-outline" style="flex: 1; text-align: center;">View Map</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if not products and not shops %}
+    <div style="text-align: center; padding: 6rem 2rem; background: var(--surface-alt); border-radius: var(--radius-lg);">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">🔍</div>
+        <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">No results found</h3>
+        <p style="color: var(--text-muted);">We couldn't find any products or shops matching "{{ query }}".</p>
+        <a href="/" class="btn btn-primary" style="margin-top: 2rem;">Back to Home</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
