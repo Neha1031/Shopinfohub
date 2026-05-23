@@ -5,47 +5,44 @@
 {% block content %}
 <div class="fade-in">
     <!-- Shop Header Card -->
-    <div class="card" style="margin-bottom: 4rem; padding: 0; overflow: hidden; border: none; background: transparent;">
-        <div style="display: flex; gap: 3rem; align-items: stretch; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 320px;">
-                <div class="img-wrapper" style="height: 100%; min-height: 350px; margin-bottom: 0; border-radius: var(--radius-lg);">
-                    <img src="{{ shop.shop_photo }}" alt="{{ shop.shop_name }}" class="zoomable" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80'">
+    <div class="list-view-product" style="margin-bottom: 4rem; padding: 2.5rem; gap: 4rem; background: var(--surface); border: 1px solid var(--surface-border);">
+        <div class="product-img" style="width: 350px; height: 350px; border-radius: var(--radius);">
+            <img src="{{ shop.shop_photo }}" alt="{{ shop.shop_name }}" class="zoomable" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80'">
+        </div>
+        
+        <div class="product-details" style="justify-content: center;">
+            <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1rem;">
+                <h1 style="font-size: 3.5rem; font-weight: 400; font-family: var(--font-heading); margin: 0;">{{ shop.shop_name }}</h1>
+                {% if not shop.is_open %}
+                    <span style="background: rgba(198, 40, 40, 0.1); color: var(--error); padding: 0.25rem 1rem; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.9rem; text-transform: uppercase;">Closed</span>
+                {% else %}
+                    <span style="background: rgba(46, 125, 50, 0.1); color: var(--success); padding: 0.25rem 1rem; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.9rem; text-transform: uppercase;">Open</span>
+                {% endif %}
+            </div>
+            
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2.5rem; line-height: 1.8;">
+                {{ shop.description }}
+            </p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+                <div style="padding: 1.5rem; background: var(--surface-alt); border-radius: var(--radius); border: 1px solid var(--surface-border);">
+                    <div style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; font-family: var(--font-body);">Owner</div>
+                    <div style="font-weight: 600; font-size: 1.1rem; font-family: var(--font-heading);">{{ shop.owner_name }}</div>
+                </div>
+                <div style="padding: 1.5rem; background: var(--surface-alt); border-radius: var(--radius); border: 1px solid var(--surface-border);">
+                    <div style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; font-family: var(--font-body);">Address</div>
+                    <div style="font-weight: 600; font-size: 1.1rem; font-family: var(--font-heading);">{{ shop.address }}</div>
                 </div>
             </div>
-            <div style="flex: 1.5; min-width: 320px; padding: 1rem 0;">
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                    <h1 style="font-size: 3rem; font-weight: 900; margin: 0;">{{ shop.shop_name }}</h1>
-                    {% if not shop.is_open %}
-                    <span class="badge badge-error">Closed</span>
-                    {% else %}
-                    <span class="badge badge-success">Open</span>
-                    {% endif %}
-                </div>
-                
-                <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.6;">
-                    {{ shop.description }}
-                </p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-                    <div class="card" style="padding: 1rem; background: rgba(255,255,255,0.03);">
-                        <div style="color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">Owner</div>
-                        <div style="font-weight: 600;">{{ shop.owner_name }}</div>
-                    </div>
-                    <div class="card" style="padding: 1rem; background: rgba(255,255,255,0.03);">
-                        <div style="color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">Address</div>
-                        <div style="font-weight: 600;">{{ shop.address }}</div>
-                    </div>
-                </div>
-                
-                <div style="display: flex; gap: 1rem;">
-                    {% if shop.map_link %}
-                    <a href="{{ shop.map_link }}" target="_blank" class="btn btn-primary">
-                        <span>🗺️</span> View on Google Maps
-                    </a>
-                    {% endif %}
-                    <div class="btn btn-outline" style="cursor: default; border-color: var(--secondary); color: var(--secondary);">
-                        <span>🛒</span> {{ products|length }} Products Available
-                    </div>
+            
+            <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                {% if shop.map_link %}
+                <a href="{{ shop.map_link }}" target="_blank" class="btn btn-primary" style="padding: 1rem 2rem;">
+                    <span>🗺️</span> View on Maps
+                </a>
+                {% endif %}
+                <div class="btn btn-outline" style="cursor: default; padding: 1rem 2rem;">
+                    <span>🛍️</span> {{ products|length }} Products
                 </div>
             </div>
         </div>

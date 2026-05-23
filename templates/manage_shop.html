@@ -22,50 +22,51 @@
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 350px 1fr; gap: 3rem;">
-        <!-- Left Sidebar: Shop Summary -->
-        <aside style="display: flex; flex-direction: column; gap: 2rem;">
-            <div class="card" style="padding: 1.5rem;">
-                <div style="height: 250px; margin-bottom: 1.5rem; border-radius: var(--radius); overflow: hidden; background: var(--surface-alt);">
-                    <img src="{{ shop.shop_photo }}" alt="Shop Photo" class="zoomable" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80'">
-                </div>
-                
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h3 style="font-size: 1.25rem; font-weight: 700;">{{ shop.shop_name }}</h3>
-                    {% if shop.is_open %}
-                        <span class="badge badge-success">Open</span>
-                    {% else %}
-                        <span class="badge badge-error">Closed</span>
-                    {% endif %}
-                </div>
-                
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.6;">
-                    📍 {{ shop.address }}
-                </p>
-                
-                <form action="/toggle_shop_status/{{ shop.id }}" method="POST" style="width: 100%;">
-                    <button type="submit" class="btn btn-outline" style="width: 100%; border-color: var(--border-active);">
-                        {% if shop.is_open %}Temporarily Close Shop{% else %}Mark as Open Now{% endif %}
-                    </button>
-                </form>
+    <!-- Top Row: Shop Info & Quick Stats -->
+    <div style="display: grid; grid-template-columns: 350px 1fr; gap: 3rem; margin-bottom: 4rem; align-items: start;">
+        <!-- Left: Shop Summary -->
+        <div class="card" style="padding: 1.5rem;">
+            <div style="height: 250px; margin-bottom: 1.5rem; border-radius: var(--radius); overflow: hidden; background: var(--surface-alt);">
+                <img src="{{ shop.shop_photo }}" alt="Shop Photo" class="zoomable" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80'">
             </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.5rem; font-weight: 700; font-family: var(--font-heading);">{{ shop.shop_name }}</h3>
+                {% if shop.is_open %}
+                    <span style="background: rgba(46, 125, 50, 0.1); color: var(--success); padding: 0.25rem 1rem; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.8rem; text-transform: uppercase;">Open</span>
+                {% else %}
+                    <span style="background: rgba(198, 40, 40, 0.1); color: var(--error); padding: 0.25rem 1rem; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.8rem; text-transform: uppercase;">Closed</span>
+                {% endif %}
+            </div>
+            
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6;">
+                📍 {{ shop.address }}
+            </p>
+            
+            <form action="/toggle_shop_status/{{ shop.id }}" method="POST" style="width: 100%;">
+                <button type="submit" class="btn btn-outline" style="width: 100%; border-color: var(--border-active);">
+                    {% if shop.is_open %}Temporarily Close Shop{% else %}Mark as Open Now{% endif %}
+                </button>
+            </form>
+        </div>
 
-            <div class="card" style="background: rgba(255,255,255,0.02); border: 1px dashed var(--border);">
-                <h4 style="margin-bottom: 1rem; font-size: 1rem;">Quick Stats</h4>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">{{ products|length }}</div>
-                        <div style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase;">Total Items</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--success);">{{ products|selectattr('status', 'equalto', 'Available')|list|length }}</div>
-                        <div style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase;">In Stock</div>
-                    </div>
+        <!-- Right: Quick Stats -->
+        <div class="card" style="background: var(--surface-alt); border: 1px dashed var(--surface-border); padding: 2.5rem;">
+            <h4 style="margin-bottom: 2rem; font-size: 1.5rem; font-family: var(--font-heading);">Quick Stats</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+                <div class="card" style="text-align: center; background: var(--surface); box-shadow: var(--shadow-soft);">
+                    <div style="font-size: 3.5rem; font-weight: 800; color: var(--primary); font-family: var(--font-heading); line-height: 1;">{{ products|length }}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 1rem; font-weight: 600;">Total Items</div>
+                </div>
+                <div class="card" style="text-align: center; background: var(--surface); box-shadow: var(--shadow-soft);">
+                    <div style="font-size: 3.5rem; font-weight: 800; color: var(--success); font-family: var(--font-heading); line-height: 1;">{{ products|selectattr('status', 'equalto', 'Available')|list|length }}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 1rem; font-weight: 600;">In Stock</div>
                 </div>
             </div>
-        </aside>
+        </div>
+    </div>
 
-        <!-- Main Content: Product Management -->
+    <!-- Main Content: Product Management (Full Width Below) -->
         <main>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <h2 style="font-size: 1.5rem; font-weight: 800;">Product Catalog</h2>
