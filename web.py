@@ -86,6 +86,38 @@ def init_db():
     ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT FALSE
     """)
 
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS shops (
+    id SERIAL PRIMARY KEY,
+    shop_name VARCHAR(255) NOT NULL,
+    owner_name VARCHAR(255) NOT NULL,
+    shop_photo TEXT,
+    address TEXT,
+    map_link VARCHAR(500),
+    description TEXT,
+    user_email VARCHAR(255) NOT NULL,
+    is_open BOOLEAN DEFAULT TRUE,
+    is_deleted BOOLEAN DEFAULT FALSE
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS products (
+    id SERIAL PRIMARY KEY,
+    shop_email VARCHAR(255),
+    shop_id INTEGER,
+    product_name VARCHAR(255) NOT NULL,
+    product_photo TEXT,
+    price DECIMAL(10,2),
+    details TEXT,
+    voice_description TEXT,
+    status VARCHAR(100),
+    quantity INTEGER DEFAULT 0,
+    weight VARCHAR(50),
+    quality VARCHAR(100) DEFAULT 'Standard'
+    )
+    """)
+
     db.commit()
     cursor.close()
     db.close()
