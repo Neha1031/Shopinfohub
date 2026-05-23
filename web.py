@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for, flash
+from flask import Flask, render_template, request, session, redirect, url_for, flash, jsonify
 from psycopg2.extras import RealDictCursor
 import psycopg2
 import os
@@ -586,6 +586,28 @@ def product_detail(product_id):
         return "Product not found", 404
         
     return render_template('product_detail.html', product=product)
+
+# API to fetch products dynamically for the homepage
+@app.route('/api/products')
+def api_products():
+    cat = request.args.get('category', '')
+    if not cat:
+        return jsonify([])
+        
+    db = get_db_connection()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    
+    product_query = """
+        SELECT p.*, s.shop_name, s.address 
+        FROM products p
+        JOIN shops s ON p.shop_id = s.id
+        WHERE p.is_deleted = FALSE AND s.is_deleted = FALSE AND p.main_category = %s
+    """
+    cursor.execute(product_query, (cat,))
+    products = cursor.fetchall()
+    db.close()
+    
+    return jsonify(products)
 
 # Unified Search (Shops and Products) - PUBLIC
 @app.route('/search')

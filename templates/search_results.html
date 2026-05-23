@@ -23,28 +23,45 @@
             <span style="font-size: 1rem; font-weight: 600; color: var(--primary); background: rgba(99, 102, 241, 0.1); padding: 0.25rem 1rem; border-radius: 1rem;">{{ products|length }} found</span>
         </h2>
         
-        <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+        <div style="display: flex; flex-direction: column;">
             {% for product in products %}
-            <a href="/product/{{ product.id }}" style="text-decoration: none; color: inherit; display: block;" class="card fade-in">
-                <div style="border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1.5rem; aspect-ratio: 4/3; background: var(--surface-alt);">
+            <div class="list-view-product fade-in">
+                <div class="product-img">
                     {% if product.product_photo %}
                         <img src="{{ product.product_photo }}" alt="{{ product.product_name }}" style="width: 100%; height: 100%; object-fit: cover;">
                     {% else %}
                         <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 3rem;">📦</div>
                     {% endif %}
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0;">{{ product.product_name }}</h3>
-                    <span style="font-weight: 800; color: var(--primary); font-size: 1.2rem;">₹{{ product.price }}</span>
+                <div class="product-details">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                        <h3 style="font-size: 1.5rem; font-weight: 800; margin: 0;">{{ product.product_name }}</h3>
+                        <span style="font-weight: 800; color: var(--primary); font-size: 1.5rem;">₹{{ product.price }}</span>
+                    </div>
+                    
+                    <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1rem;">{{ product.details }}</p>
+                    
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                        <span style="padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.85rem; font-weight: 600; background: var(--surface-alt); border: 1px solid var(--surface-border);">
+                            📁 {{ product.main_category }} > {{ product.sub_category }}
+                        </span>
+                        <span style="padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.85rem; font-weight: 600; 
+                            {% if product.status == 'Available' %}background: #dcfce7; color: #166534;{% else %}background: #fee2e2; color: #991b1b;{% endif %}">
+                            {{ product.status }}
+                        </span>
+                    </div>
+                    
+                    <div class="shop-link" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-size: 1rem; font-weight: 700; color: var(--text-muted);">
+                            🏪 {{ product.shop_name }}
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <a href="/product/{{ product.id }}" class="btn btn-outline">Product Details</a>
+                            <a href="/shop/{{ product.shop_id }}" class="btn btn-primary">View Shop Details</a>
+                        </div>
+                    </div>
                 </div>
-                <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                    🏪 {{ product.shop_name }}
-                </div>
-                <div style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; 
-                    {% if product.status == 'Available' %}background: rgba(16, 185, 129, 0.1); color: var(--success);{% else %}background: rgba(244, 63, 94, 0.1); color: var(--error);{% endif %}">
-                    {{ product.status }}
-                </div>
-            </a>
+            </div>
             {% endfor %}
         </div>
     </div>

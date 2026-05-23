@@ -1,22 +1,25 @@
 :root {
-  /* Premium Modern Palette */
-  --primary: #4f46e5; /* Deep Indigo */
-  --primary-glow: rgba(79, 70, 229, 0.4);
-  --secondary: #0ea5e9; /* Sky Blue */
-  --accent: #ec4899; /* Pink */
+  /* Clean Minimal Palette */
+  --primary: #000000; /* Pure Black */
+  --primary-glow: rgba(0, 0, 0, 0.05);
+  --secondary: #4b5563; /* Slate 600 */
+  --accent: #2563eb; /* Blue for links if needed */
   
-  --background: #f8fafc; /* Crisp cool light grey */
-  --surface: rgba(255, 255, 255, 0.85); /* Cleaner glass */
-  --surface-border: rgba(255, 255, 255, 1);
+  --background: #ffffff; /* Pure White */
+  --surface: #ffffff;
+  --surface-alt: #f8f9fa; /* Very Light Gray */
+  --surface-border: #e5e7eb; /* Light Gray Border */
   
-  --text: #0f172a; /* Slate 900 for high contrast readability */
-  --text-muted: #64748b;
-  --text-dim: #94a3b8;
+  --text: #000000;
+  --text-muted: #4b5563;
+  --text-dim: #9ca3af;
   
-  --radius: 1.25rem;
-  --radius-lg: 2rem;
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
   
-  --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --transition: all 0.2s ease-in-out;
 }
 
 * {
@@ -112,10 +115,7 @@ body {
 }
 
 .nav-brand span {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--primary);
 }
 
 .nav-links {
@@ -151,27 +151,24 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), #4f46e5);
+  background: var(--primary);
   color: white;
-  box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+  border: 1px solid var(--primary);
 }
 
 .btn-primary:hover {
-  transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.5);
+  background: white;
+  color: var(--primary);
 }
 
 .btn-outline {
-  background: rgba(255, 255, 255, 0.5);
+  background: white;
   border: 1px solid var(--surface-border);
   color: var(--text);
-  backdrop-filter: blur(10px);
 }
 
 .btn-outline:hover {
-  background: white;
   border-color: var(--primary);
-  transform: translateY(-5px);
   color: var(--primary);
 }
 
@@ -185,20 +182,14 @@ body {
 /* Frosted Glass Cards */
 .card {
   background: var(--surface);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--surface-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   padding: 2.5rem;
   transition: var(--transition);
-  box-shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.05);
 }
 
 .card:hover {
-  transform: translateY(-8px) scale(1.01);
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(79, 70, 229, 0.3);
-  box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.15);
+  border-color: var(--text-dim);
 }
 
 /* Hero Section */
@@ -217,10 +208,7 @@ body {
 }
 
 .hero h1 span {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--primary);
 }
 
 .hero p {
@@ -360,4 +348,50 @@ body {
   .hero h1 { font-size: 3.5rem; }
   .navbar { padding: 1rem; }
   .container { padding: 3rem 1rem; }
+}
+
+/* List View Product Layout */
+.list-view-product {
+  display: flex;
+  flex-direction: row;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.list-view-product .product-img {
+  width: 300px;
+  min-width: 300px;
+  height: 100%;
+  object-fit: cover;
+  border-right: 1px solid var(--surface-border);
+  background: var(--surface-alt);
+}
+
+.list-view-product .product-details {
+  padding: 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.list-view-product .shop-link {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--surface-border);
+}
+
+@media (max-width: 768px) {
+  .list-view-product {
+    flex-direction: column;
+  }
+  .list-view-product .product-img {
+    width: 100%;
+    min-width: 100%;
+    height: 250px;
+    border-right: none;
+    border-bottom: 1px solid var(--surface-border);
+  }
 }
