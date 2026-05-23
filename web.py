@@ -259,7 +259,7 @@ def list_shops():
             WHERE (s.shop_name LIKE %s 
                OR s.address LIKE %s 
                OR p.product_name LIKE %s)
-               AND s.is_deleted = 0
+               AND s.is_deleted = FALSE
         """
         val = f"%{search_query}%"
         cursor.execute(sql, (val, val, val))
@@ -490,7 +490,7 @@ def customer_dashboard():
             WHERE (s.shop_name LIKE %s 
                OR s.address LIKE %s 
                OR p.product_name LIKE %s)
-               AND s.is_deleted = 0
+               AND s.is_deleted = FALSE
         """
         val = f"%{search_query}%"
         cursor.execute(sql, (val, val, val))
