@@ -11,12 +11,17 @@
     </div>
 
     <!-- Subcategories -->
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 4rem;">
-        {% for sub in subcategories %}
+    <div id="subcat-container" style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem;">
+        {% for sub, items in category_data.items() %}
         <button class="btn btn-outline sub-cat-btn" data-sub="{{ sub }}" style="padding: 0.75rem 2rem; font-size: 1.1rem; border-radius: 2rem;">
             {{ sub }}
         </button>
         {% endfor %}
+    </div>
+
+    <!-- Item Types (Dynamically injected here) -->
+    <div id="item-type-container" style="display: none; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-bottom: 4rem;">
+        <!-- Buttons injected by JS -->
     </div>
 
     <!-- Dynamic Products Container -->
@@ -32,11 +37,14 @@
 </div>
 
 <script>
+    const categoryData = {{ category_data | tojson | safe }};
     const mainCategory = "{{ main_category }}";
+    
+    let currentSubCat = "";
 
     document.querySelectorAll('.sub-cat-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            // Highlight selected button
+            // Highlight selected subcategory button
             document.querySelectorAll('.sub-cat-btn').forEach(b => {
                 b.classList.remove('btn-primary');
                 b.classList.add('btn-outline');
@@ -44,72 +52,116 @@
             this.classList.remove('btn-outline');
             this.classList.add('btn-primary');
 
-            const subCat = this.getAttribute('data-sub');
-            document.getElementById('dynamic-category-title').textContent = subCat + " Products";
+            currentSubCat = this.getAttribute('data-sub');
             
-            const container = document.getElementById('dynamic-products-container');
-            const list = document.getElementById('dynamic-products-list');
+            // Hide products until an item type is selected
+            document.getElementById('dynamic-products-container').style.display = 'none';
             
-            list.innerHTML = '<div style="text-align: center; padding: 4rem; font-size: 1.2rem; color: var(--text-muted);">Loading products...</div>';
-            container.style.display = 'block';
+            // Render item type buttons
+            const itemTypes = categoryData[currentSubCat] || [];
+            const itemContainer = document.getElementById('item-type-container');
             
-            fetch(`/api/products?category=${encodeURIComponent(mainCategory)}&sub_category=${encodeURIComponent(subCat)}`)
-                .then(res => res.json())
-                .then(products => {
-                    if(products.length === 0) {
-                        list.innerHTML = '<div style="text-align: center; padding: 4rem; background: var(--surface-alt); border-radius: var(--radius);"><div style="font-size: 4rem; margin-bottom: 1rem;">📦</div><h3 style="font-size: 1.5rem; font-weight: 700;">No products found in ' + subCat + ' yet.</h3></div>';
-                        return;
-                    }
-                    
-                    let html = '';
-                    products.forEach(p => {
-                        let imgHtml = p.product_photo ? 
-                            `<img src="${p.product_photo}" alt="${p.product_name}" style="width: 100%; height: 100%; object-fit: cover;">` :
-                            `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 3rem;">📦</div>`;
-                            
-                        let statusHtml = p.status.toLowerCase() === 'available' ? 
-                            `<span class="badge badge-success" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 1rem; background: #dcfce7; color: #166534; border: 1px solid #bbf7d0;">In Stock</span>` : 
-                            `<span class="badge badge-error" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 1rem; background: #fee2e2; color: #991b1b; border: 1px solid #fecaca;">${p.status}</span>`;
-                            
-                        html += `
-                        <div class="list-view-product fade-in" style="margin-bottom: 2rem;">
-                            <div class="product-img">
-                                ${imgHtml}
+            if(itemTypes.length > 0) {
+                let buttonsHtml = '';
+                itemTypes.forEach(item => {
+                    buttonsHtml += `<button class="btn btn-outline item-type-btn" data-item="${item}" style="padding: 0.5rem 1.5rem; font-size: 0.95rem; border-radius: 2rem;">${item}</button>`;
+                });
+                itemContainer.innerHTML = buttonsHtml;
+                itemContainer.style.display = 'flex';
+                
+                // Add event listeners to new item type buttons
+                document.querySelectorAll('.item-type-btn').forEach(iBtn => {
+                    iBtn.addEventListener('click', function() {
+                        // Highlight selected item type
+                        document.querySelectorAll('.item-type-btn').forEach(b => {
+                            b.classList.remove('btn-primary');
+                            b.classList.add('btn-outline');
+                        });
+                        this.classList.remove('btn-outline');
+                        this.classList.add('btn-primary');
+                        
+                        const selectedItem = this.getAttribute('data-item');
+                        fetchProducts(currentSubCat, selectedItem);
+                    });
+                });
+            } else {
+                itemContainer.style.display = 'none';
+                // If no item types exist, just fetch products for the subcat
+                fetchProducts(currentSubCat, "");
+            }
+        });
+    });
+    
+    function fetchProducts(subCat, itemType) {
+        document.getElementById('dynamic-category-title').textContent = itemType ? `${itemType} Products` : `${subCat} Products`;
+        
+        const container = document.getElementById('dynamic-products-container');
+        const list = document.getElementById('dynamic-products-list');
+        
+        list.innerHTML = '<div style="text-align: center; padding: 4rem; font-size: 1.2rem; color: var(--text-muted);">Loading products...</div>';
+        container.style.display = 'block';
+        
+        let url = `/api/products?category=${encodeURIComponent(mainCategory)}&sub_category=${encodeURIComponent(subCat)}`;
+        if (itemType) {
+            url += `&item_type=${encodeURIComponent(itemType)}`;
+        }
+        
+        fetch(url)
+            .then(res => res.json())
+            .then(products => {
+                if(products.length === 0) {
+                    list.innerHTML = `<div style="text-align: center; padding: 4rem; background: var(--surface-alt); border-radius: var(--radius);"><div style="font-size: 4rem; margin-bottom: 1rem;">📦</div><h3 style="font-size: 1.5rem; font-weight: 700;">No products found in ${itemType || subCat} yet.</h3></div>`;
+                    return;
+                }
+                
+                let html = '';
+                products.forEach(p => {
+                    let imgHtml = p.product_photo ? 
+                        `<img src="${p.product_photo}" alt="${p.product_name}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                        `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 3rem;">📦</div>`;
+                        
+                    let statusHtml = p.status.toLowerCase() === 'available' ? 
+                        `<span class="badge badge-success" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 1rem; background: #dcfce7; color: #166534; border: 1px solid #bbf7d0;">In Stock</span>` : 
+                        `<span class="badge badge-error" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 1rem; background: #fee2e2; color: #991b1b; border: 1px solid #fecaca;">${p.status}</span>`;
+                        
+                    html += `
+                    <div class="list-view-product fade-in" style="margin-bottom: 2rem;">
+                        <div class="product-img">
+                            ${imgHtml}
+                        </div>
+                        <div class="product-details">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                                <h3 style="font-size: 1.5rem; font-weight: 800; margin: 0;">${p.product_name}</h3>
+                                <span style="font-weight: 800; color: var(--primary); font-size: 1.5rem;">₹${p.price}</span>
                             </div>
-                            <div class="product-details">
-                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                                    <h3 style="font-size: 1.5rem; font-weight: 800; margin: 0;">${p.product_name}</h3>
-                                    <span style="font-weight: 800; color: var(--primary); font-size: 1.5rem;">₹${p.price}</span>
+                            
+                            <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1rem;">${p.details || 'No details provided.'}</p>
+                            
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                                <span style="padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.85rem; font-weight: 600; background: var(--surface-alt); border: 1px solid var(--surface-border);">
+                                    📁 ${p.main_category} > ${p.sub_category} ${p.item_type ? '> ' + p.item_type : ''}
+                                </span>
+                                ${statusHtml}
+                            </div>
+                            
+                            <div class="shop-link" style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 1rem; font-weight: 700; color: var(--text-muted);">
+                                    🏪 ${p.shop_name}
                                 </div>
-                                
-                                <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1rem;">${p.details || 'No details provided.'}</p>
-                                
-                                <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
-                                    <span style="padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.85rem; font-weight: 600; background: var(--surface-alt); border: 1px solid var(--surface-border);">
-                                        📁 ${p.main_category} > ${p.sub_category}
-                                    </span>
-                                    ${statusHtml}
-                                </div>
-                                
-                                <div class="shop-link" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div style="font-size: 1rem; font-weight: 700; color: var(--text-muted);">
-                                        🏪 ${p.shop_name}
-                                    </div>
-                                    <div style="display: flex; gap: 1rem;">
-                                        <a href="/product/${p.id}" class="btn btn-outline">Product Details</a>
-                                        <a href="/shop/${p.shop_id}" class="btn btn-primary">View Shop Details</a>
-                                    </div>
+                                <div style="display: flex; gap: 1rem;">
+                                    <a href="/product/${p.id}" class="btn btn-outline">Product Details</a>
+                                    <a href="/shop/${p.shop_id}" class="btn btn-primary">View Shop Details</a>
                                 </div>
                             </div>
                         </div>
-                        `;
-                    });
-                    list.innerHTML = html;
-                })
-                .catch(err => {
-                    list.innerHTML = '<div style="color: red; text-align: center; padding: 2rem;">Error loading products.</div>';
+                    </div>
+                    `;
                 });
-        });
-    });
+                list.innerHTML = html;
+            })
+            .catch(err => {
+                list.innerHTML = '<div style="color: red; text-align: center; padding: 2rem;">Error loading products.</div>';
+            });
+    }
 </script>
 {% endblock %}

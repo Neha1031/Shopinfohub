@@ -589,25 +589,34 @@ def product_detail(product_id):
 
 @app.route('/category/<cat_name>')
 def category_page(cat_name):
-    # Pass the subcategories to the template
-    subcategories = []
+    # Pass the full subcategory dict to the template
+    category_data = {}
     if cat_name in CATEGORIES:
-        subcategories = list(CATEGORIES[cat_name].keys())
+        category_data = CATEGORIES[cat_name]
         
-    return render_template('category_page.html', main_category=cat_name, subcategories=subcategories)
+    return render_template('category_page.html', main_category=cat_name, category_data=category_data)
 
 # API to fetch products dynamically for the homepage or category page
 @app.route('/api/products')
 def api_products():
     cat = request.args.get('category', '')
     sub_cat = request.args.get('sub_category', '')
+    item_t = request.args.get('item_type', '')
     if not cat:
         return jsonify([])
         
     db = get_db_connection()
     cursor = db.cursor(cursor_factory=RealDictCursor)
     
-    if sub_cat:
+    if sub_cat and item_t:
+        product_query = """
+            SELECT p.*, s.shop_name, s.address 
+            FROM products p
+            JOIN shops s ON p.shop_id = s.id
+            WHERE p.is_deleted = FALSE AND s.is_deleted = FALSE AND p.main_category = %s AND p.sub_category = %s AND p.item_type = %s
+        """
+        cursor.execute(product_query, (cat, sub_cat, item_t))
+    elif sub_cat:
         product_query = """
             SELECT p.*, s.shop_name, s.address 
             FROM products p
