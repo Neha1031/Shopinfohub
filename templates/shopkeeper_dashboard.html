@@ -47,37 +47,36 @@
         <h2 style="font-size: 1.75rem; font-weight: 800;">Manage Your Storefronts</h2>
     </div>
 
-    <div class="grid">
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
         {% for s in shops %}
-        <div class="card" style="display: flex; flex-direction: column; padding: 0; overflow: hidden; background: #fff; border: 1px solid var(--border);">
-            <div class="img-wrapper" style="margin-bottom: 0; border-radius: 0; border: none; height: 200px;">
+        <div class="list-view-product">
+            <div class="product-img" style="width: 250px; height: 250px;">
                 <img src="{{ s.shop_photo }}" alt="{{ s.shop_name }}" class="zoomable" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80'">
             </div>
             
-            <div style="padding: 2rem; flex: 1; display: flex; flex-direction: column;">
+            <div class="product-details" style="justify-content: center;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                    <h3 style="font-size: 1.3rem; font-weight: 800;">{{ s.shop_name }}</h3>
+                    <h3 style="font-size: 2rem; font-family: var(--font-heading);">{{ s.shop_name }}</h3>
                     {% if s.is_open %}
-                        <span class="badge badge-success">Open</span>
+                        <span style="background: rgba(46, 125, 50, 0.1); color: var(--success); padding: 0.25rem 1rem; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.8rem; text-transform: uppercase;">Open</span>
                     {% else %}
-                        <span class="badge badge-error">Closed</span>
+                        <span style="background: rgba(198, 40, 40, 0.1); color: var(--error); padding: 0.25rem 1rem; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.8rem; text-transform: uppercase;">Closed</span>
                     {% endif %}
                 </div>
                 
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; line-height: 1.6; flex: 1;">
-                    📍 {{ s.address[:100] }}{% if s.address|length > 100 %}...{% endif %}
+                <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 2.5rem; line-height: 1.6;">
+                    📍 {{ s.address }}
                 </p>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <a href="/manage_shop/{{ s.id }}" class="btn btn-primary" style="padding: 0.75rem;">Manage Items</a>
-                    <a href="/shop/{{ s.id }}" target="_blank" class="btn btn-outline" style="padding: 0.75rem;">Public View</a>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="/manage_shop/{{ s.id }}" class="btn btn-primary" style="padding: 0.75rem 2rem;">Manage Items</a>
+                    <a href="/shop/{{ s.id }}" target="_blank" class="btn btn-outline" style="padding: 0.75rem 2rem;">Public View</a>
+                    <form action="/delete_shop/{{ s.id }}" method="POST" onsubmit="return confirm('CRITICAL: This will permanently delete this shop and all products. Continue?');" style="margin-left: auto;">
+                        <button type="submit" class="btn btn-outline" style="border-color: var(--error); color: var(--error) !important; padding: 0.75rem 2rem;">
+                            Delete Shop
+                        </button>
+                    </form>
                 </div>
-                
-                <form action="/delete_shop/{{ s.id }}" method="POST" onsubmit="return confirm('CRITICAL: This will permanently delete this shop and all products. Continue?');" style="margin-top: 1rem;">
-                    <button type="submit" class="btn btn-danger" style="width: 100%; padding: 0.6rem; font-size: 0.8rem; background: transparent; border-color: #fee2e2; color: #ef4444;">
-                        Delete Shop Profile
-                    </button>
-                </form>
             </div>
         </div>
         {% else %}
