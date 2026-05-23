@@ -65,6 +65,16 @@ def init_db():
     """)
 
     cursor.execute("""
+    ALTER TABLE shops
+    ADD COLUMN IF NOT EXISTS city VARCHAR(255)
+    """)
+
+    cursor.execute("""
+    ALTER TABLE shops
+    ADD COLUMN IF NOT EXISTS area VARCHAR(255)
+    """)
+
+    cursor.execute("""
     CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
     shop_email VARCHAR(255),
