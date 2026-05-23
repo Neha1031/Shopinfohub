@@ -587,23 +587,43 @@ def product_detail(product_id):
         
     return render_template('product_detail.html', product=product)
 
-# API to fetch products dynamically for the homepage
+@app.route('/category/<cat_name>')
+def category_page(cat_name):
+    # Pass the subcategories to the template
+    subcategories = []
+    if cat_name in CATEGORIES:
+        subcategories = list(CATEGORIES[cat_name].keys())
+        
+    return render_template('category_page.html', main_category=cat_name, subcategories=subcategories)
+
+# API to fetch products dynamically for the homepage or category page
 @app.route('/api/products')
 def api_products():
     cat = request.args.get('category', '')
+    sub_cat = request.args.get('sub_category', '')
     if not cat:
         return jsonify([])
         
     db = get_db_connection()
     cursor = db.cursor(cursor_factory=RealDictCursor)
     
-    product_query = """
-        SELECT p.*, s.shop_name, s.address 
-        FROM products p
-        JOIN shops s ON p.shop_id = s.id
-        WHERE p.is_deleted = FALSE AND s.is_deleted = FALSE AND p.main_category = %s
-    """
-    cursor.execute(product_query, (cat,))
+    if sub_cat:
+        product_query = """
+            SELECT p.*, s.shop_name, s.address 
+            FROM products p
+            JOIN shops s ON p.shop_id = s.id
+            WHERE p.is_deleted = FALSE AND s.is_deleted = FALSE AND p.main_category = %s AND p.sub_category = %s
+        """
+        cursor.execute(product_query, (cat, sub_cat))
+    else:
+        product_query = """
+            SELECT p.*, s.shop_name, s.address 
+            FROM products p
+            JOIN shops s ON p.shop_id = s.id
+            WHERE p.is_deleted = FALSE AND s.is_deleted = FALSE AND p.main_category = %s
+        """
+        cursor.execute(product_query, (cat,))
+        
     products = cursor.fetchall()
     db.close()
     

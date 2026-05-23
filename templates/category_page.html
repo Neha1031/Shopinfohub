@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ main_category }} Collection - ShopInfoHub{% endblock %}
+
+{% block content %}
+<div class="fade-in" style="margin-top: 4rem; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 2rem;">
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h1 style="font-size: 3rem; font-weight: 900; margin-bottom: 1rem;">{{ main_category }} Collection</h1>
+        <p style="color: var(--text-muted); font-size: 1.25rem;">Choose a category to explore products</p>
+    </div>
+
+    <!-- Subcategories -->
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 4rem;">
+        {% for sub in subcategories %}
+        <button class="btn btn-outline sub-cat-btn" data-sub="{{ sub }}" style="padding: 0.75rem 2rem; font-size: 1.1rem; border-radius: 2rem;">
+            {{ sub }}
+        </button>
+        {% endfor %}
+    </div>
+
+    <!-- Dynamic Products Container -->
+    <div id="dynamic-products-container" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid var(--surface-border); padding-bottom: 1rem;">
+            <h2 id="dynamic-category-title" style="font-size: 2rem; font-weight: 800;">Products</h2>
+        </div>
+        
+        <div id="dynamic-products-list" style="display: flex; flex-direction: column;">
+            <!-- Products will be injected here by JS -->
+        </div>
+    </div>
+</div>
+
+<script>
+    const mainCategory = "{{ main_category }}";
+
+    document.querySelectorAll('.sub-cat-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Highlight selected button
+            document.querySelectorAll('.sub-cat-btn').forEach(b => {
+                b.classList.remove('btn-primary');
+                b.classList.add('btn-outline');
+            });
+            this.classList.remove('btn-outline');
+            this.classList.add('btn-primary');
+
+            const subCat = this.getAttribute('data-sub');
+            document.getElementById('dynamic-category-title').textContent = subCat + " Products";
+            
+            const container = document.getElementById('dynamic-products-container');
+            const list = document.getElementById('dynamic-products-list');
+            
+            list.innerHTML = '<div style="text-align: center; padding: 4rem; font-size: 1.2rem; color: var(--text-muted);">Loading products...</div>';
+            container.style.display = 'block';
+            
+            fetch(`/api/products?category=${encodeURIComponent(mainCategory)}&sub_category=${encodeURIComponent(subCat)}`)
+                .then(res => res.json())
+                .then(products => {
+                    if(products.length === 0) {
+                        list.innerHTML = '<div style="text-align: center; padding: 4rem; background: var(--surface-alt); border-radius: var(--radius);"><div style="font-size: 4rem; margin-bottom: 1rem;">📦</div><h3 style="font-size: 1.5rem; font-weight: 700;">No products found in ' + subCat + ' yet.</h3></div>';
+                        return;
+                    }
+                    
+                    let html = '';
+                    products.forEach(p => {
+                        let imgHtml = p.product_photo ? 
+                            `<img src="${p.product_photo}" alt="${p.product_name}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                            `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 3rem;">📦</div>`;
+                            
+                        let statusHtml = p.status.toLowerCase() === 'available' ? 
+                            `<span class="badge badge-success" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 1rem; background: #dcfce7; color: #166534; border: 1px solid #bbf7d0;">In Stock</span>` : 
+                            `<span class="badge badge-error" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 1rem; background: #fee2e2; color: #991b1b; border: 1px solid #fecaca;">${p.status}</span>`;
+                            
+                        html += `
+                        <div class="list-view-product fade-in" style="margin-bottom: 2rem;">
+                            <div class="product-img">
+                                ${imgHtml}
+                            </div>
+                            <div class="product-details">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                                    <h3 style="font-size: 1.5rem; font-weight: 800; margin: 0;">${p.product_name}</h3>
+                                    <span style="font-weight: 800; color: var(--primary); font-size: 1.5rem;">₹${p.price}</span>
+                                </div>
+                                
+                                <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1rem;">${p.details || 'No details provided.'}</p>
+                                
+                                <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                                    <span style="padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.85rem; font-weight: 600; background: var(--surface-alt); border: 1px solid var(--surface-border);">
+                                        📁 ${p.main_category} > ${p.sub_category}
+                                    </span>
+                                    ${statusHtml}
+                                </div>
+                                
+                                <div class="shop-link" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="font-size: 1rem; font-weight: 700; color: var(--text-muted);">
+                                        🏪 ${p.shop_name}
+                                    </div>
+                                    <div style="display: flex; gap: 1rem;">
+                                        <a href="/product/${p.id}" class="btn btn-outline">Product Details</a>
+                                        <a href="/shop/${p.shop_id}" class="btn btn-primary">View Shop Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    });
+                    list.innerHTML = html;
+                })
+                .catch(err => {
+                    list.innerHTML = '<div style="color: red; text-align: center; padding: 2rem;">Error loading products.</div>';
+                });
+        });
+    });
+</script>
+{% endblock %}

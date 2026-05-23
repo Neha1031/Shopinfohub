@@ -33,31 +33,38 @@
     <h2 style="text-align: center; margin-bottom: 2.5rem; font-size: 2rem; font-weight: 800;">Shop By Category</h2>
     
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;" id="main-cat-container">
-        <!-- Manually mapped for better UI control, matching CATEGORIES from backend -->
-        <div class="cat-card" data-cat="Women" style="cursor: pointer; position: relative; border-radius: var(--radius); overflow: hidden; height: 250px;">
-            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500&q=80" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" class="cat-img">
-            <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
-                <h3 style="color: white; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;">WOMEN</h3>
+        <a href="/category/Women" style="text-decoration: none;">
+            <div class="cat-card" style="cursor: pointer; position: relative; border-radius: var(--radius); overflow: hidden; height: 250px;">
+                <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500&q=80" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" class="cat-img">
+                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
+                    <h3 style="color: white; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;">WOMEN</h3>
+                </div>
             </div>
-        </div>
-        <div class="cat-card" data-cat="Men" style="cursor: pointer; position: relative; border-radius: var(--radius); overflow: hidden; height: 250px;">
-            <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=500&q=80" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" class="cat-img">
-            <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
-                <h3 style="color: white; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;">MEN</h3>
+        </a>
+        <a href="/category/Men" style="text-decoration: none;">
+            <div class="cat-card" style="cursor: pointer; position: relative; border-radius: var(--radius); overflow: hidden; height: 250px;">
+                <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=500&q=80" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" class="cat-img">
+                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
+                    <h3 style="color: white; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;">MEN</h3>
+                </div>
             </div>
-        </div>
-        <div class="cat-card" data-cat="Electronics" style="cursor: pointer; position: relative; border-radius: var(--radius); overflow: hidden; height: 250px;">
-            <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=500&q=80" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" class="cat-img">
-            <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
-                <h3 style="color: white; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;">ELECTRONICS</h3>
+        </a>
+        <a href="/category/Electronics" style="text-decoration: none;">
+            <div class="cat-card" style="cursor: pointer; position: relative; border-radius: var(--radius); overflow: hidden; height: 250px;">
+                <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=500&q=80" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" class="cat-img">
+                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
+                    <h3 style="color: white; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;">ELECTRONICS</h3>
+                </div>
             </div>
-        </div>
-        <div class="cat-card" data-cat="Groceries" style="cursor: pointer; position: relative; border-radius: var(--radius); overflow: hidden; height: 250px;">
-            <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&q=80" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" class="cat-img">
-            <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
-                <h3 style="color: white; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;">GROCERIES</h3>
+        </a>
+        <a href="/category/Groceries" style="text-decoration: none;">
+            <div class="cat-card" style="cursor: pointer; position: relative; border-radius: var(--radius); overflow: hidden; height: 250px;">
+                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&q=80" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" class="cat-img">
+                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
+                    <h3 style="color: white; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;">GROCERIES</h3>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     
     <style>
@@ -65,97 +72,7 @@
             transform: scale(1.1);
         }
     </style>
-
-    <!-- Dynamic Products Container -->
-    <div id="dynamic-products-container" style="display: none; margin-top: 4rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <h2 id="dynamic-category-title" style="font-size: 2rem; font-weight: 800;">Products</h2>
-            <button onclick="closeProducts()" class="btn btn-outline" style="padding: 0.5rem 1rem;">Close</button>
-        </div>
-        <div id="dynamic-products-list" style="display: flex; flex-direction: column;">
-            <!-- Products will be injected here by JS -->
-        </div>
-    </div>
 </div>
-
-<script>
-    document.querySelectorAll('.cat-card').forEach(card => {
-        card.addEventListener('click', function() {
-            const cat = this.getAttribute('data-cat');
-            document.getElementById('dynamic-category-title').textContent = cat + " Products";
-            
-            const container = document.getElementById('dynamic-products-container');
-            const list = document.getElementById('dynamic-products-list');
-            
-            list.innerHTML = '<div style="text-align: center; padding: 2rem;">Loading products...</div>';
-            container.style.display = 'block';
-            
-            // Scroll to the container smoothly
-            container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            
-            fetch(`/api/products?category=${encodeURIComponent(cat)}`)
-                .then(res => res.json())
-                .then(products => {
-                    if(products.length === 0) {
-                        list.innerHTML = '<div style="text-align: center; padding: 3rem; background: var(--surface-alt); border-radius: var(--radius);"><div style="font-size: 3rem; margin-bottom: 1rem;">📦</div><h3>No products found in this category yet.</h3></div>';
-                        return;
-                    }
-                    
-                    let html = '';
-                    products.forEach(p => {
-                        let imgHtml = p.product_photo ? 
-                            `<img src="${p.product_photo}" alt="${p.product_name}" style="width: 100%; height: 100%; object-fit: cover;">` :
-                            `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 3rem;">📦</div>`;
-                            
-                        let statusHtml = p.status.toLowerCase() === 'available' ? 
-                            `<span class="badge badge-success" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 1rem; background: #dcfce7; color: #166534;">In Stock</span>` : 
-                            `<span class="badge badge-error" style="font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 1rem; background: #fee2e2; color: #991b1b;">${p.status}</span>`;
-                            
-                        html += `
-                        <div class="list-view-product fade-in" style="margin-bottom: 1.5rem;">
-                            <div class="product-img">
-                                ${imgHtml}
-                            </div>
-                            <div class="product-details">
-                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                                    <h3 style="font-size: 1.5rem; font-weight: 800; margin: 0;">${p.product_name}</h3>
-                                    <span style="font-weight: 800; color: var(--primary); font-size: 1.5rem;">₹${p.price}</span>
-                                </div>
-                                
-                                <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1rem;">${p.details || 'No details provided.'}</p>
-                                
-                                <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
-                                    <span style="padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.85rem; font-weight: 600; background: var(--surface-alt); border: 1px solid var(--surface-border);">
-                                        📁 ${p.main_category || 'General'}
-                                    </span>
-                                    ${statusHtml}
-                                </div>
-                                
-                                <div class="shop-link" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div style="font-size: 1rem; font-weight: 700; color: var(--text-muted);">
-                                        🏪 ${p.shop_name}
-                                    </div>
-                                    <div style="display: flex; gap: 1rem;">
-                                        <a href="/product/${p.id}" class="btn btn-outline">Product Details</a>
-                                        <a href="/shop/${p.shop_id}" class="btn btn-primary">View Shop Details</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        `;
-                    });
-                    list.innerHTML = html;
-                })
-                .catch(err => {
-                    list.innerHTML = '<div style="color: red; text-align: center; padding: 2rem;">Error loading products.</div>';
-                });
-        });
-    });
-    
-    function closeProducts() {
-        document.getElementById('dynamic-products-container').style.display = 'none';
-    }
-</script>
 
 <!-- Product Dashboard (Random Products) -->
 {% if random_products %}
