@@ -1,163 +1,117 @@
 {% extends 'base.html' %}
 
-{% block title %}ShopInfoHub | Your Local Business Discovery Platform{% endblock %}
+{% block title %}ShopInfoHub | Premium Local Marketplace{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="hero fade-in" style="padding: 8rem 2rem; background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.08), transparent 40%); text-align: center;">
-    <h1 style="font-size: 4rem; letter-spacing: -0.04em;">Revolutionizing <br><span>Local Discovery</span></h1>
-    <p style="max-width: 700px; margin: 2rem auto; font-size: 1.25rem; line-height: 1.7;">
-        ShopInfoHub bridges the gap between traditional shops and modern shoppers. Discover products, check live availability, and support your local community—all in one place.
+<!-- Luxury Hero Section -->
+<div class="hero fade-in" style="position: relative; margin: -3rem -2rem 0 -2rem; padding: 10rem 4rem 12rem 4rem; background: linear-gradient(rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.8)), url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2000') no-reverse center/cover; color: white;">
+    <h4 style="font-family: var(--font-body); font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 2rem; color: #E8E5DF;">PREMIUM LOCAL MARKETPLACE</h4>
+    
+    <h1 style="font-size: 4.5rem; font-weight: 400; margin-bottom: 1.5rem; max-width: 800px; color: white;">
+        Discover <span style="font-style: italic; color: var(--primary);">exceptional</span> local quality.
+    </h1>
+    
+    <p style="font-family: var(--font-body); font-size: 1.1rem; max-width: 600px; margin-bottom: 3rem; color: #E8E5DF; line-height: 1.8;">
+        Explore premium clothing, electronics, groceries, and more from the finest local shops in your area. Everything you need, right around the corner.
     </p>
     
-    <!-- Unified Search Bar -->
-    <div style="max-width: 600px; margin: 0 auto 3rem;">
-        <form action="/search" method="GET" style="display: flex; gap: 0.5rem; background: #fff; padding: 0.5rem; border-radius: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
-            <input type="text" name="q" placeholder="Search for shops or products..." required style="flex: 1; border: none; outline: none; padding: 0.75rem 1.5rem; font-size: 1.1rem; border-radius: 2rem; background: transparent;">
-            <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem; border-radius: 2rem;">Search</button>
-        </form>
-    </div>
-
-    <div style="display: flex; gap: 1.5rem; justify-content: center;">
-        <a href="/shops" class="btn btn-outline" style="padding: 1.25rem 3rem; font-size: 1.1rem; border-radius: 1.25rem;">
-            Explore All Shops
-        </a>
-        <a href="/register" class="btn btn-primary" style="padding: 1.25rem 3rem; font-size: 1.1rem; border-radius: 1.25rem;">
-            List Your Business
-        </a>
+    <div style="display: flex; gap: 1.5rem;">
+        <a href="/shops" class="btn btn-primary" style="padding: 1rem 3rem; font-size: 0.95rem;">Browse Shops</a>
+        <a href="/register" class="btn btn-outline" style="padding: 1rem 3rem; font-size: 0.95rem; border-color: white; color: white !important;">List Your Business</a>
     </div>
 </div>
 
-<!-- Category Browser with Images -->
-<div class="fade-in" style="margin-top: -3rem; position: relative; z-index: 10; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 3rem; background: #fff; border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--surface-border);">
-    <h2 style="text-align: center; margin-bottom: 2.5rem; font-size: 2rem; font-weight: 800;">Shop By Category</h2>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;" id="main-cat-container">
-        <a href="/category/Women" style="text-decoration: none;">
-            <div class="cat-card" style="cursor: pointer; position: relative; border-radius: var(--radius); overflow: hidden; height: 250px;">
-                <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500&q=80" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" class="cat-img">
-                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
-                    <h3 style="color: white; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;">WOMEN</h3>
-                </div>
-            </div>
-        </a>
-        <a href="/category/Men" style="text-decoration: none;">
-            <div class="cat-card" style="cursor: pointer; position: relative; border-radius: var(--radius); overflow: hidden; height: 250px;">
-                <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=500&q=80" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" class="cat-img">
-                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
-                    <h3 style="color: white; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;">MEN</h3>
-                </div>
-            </div>
-        </a>
-        <a href="/category/Electronics" style="text-decoration: none;">
-            <div class="cat-card" style="cursor: pointer; position: relative; border-radius: var(--radius); overflow: hidden; height: 250px;">
-                <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=500&q=80" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" class="cat-img">
-                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
-                    <h3 style="color: white; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;">ELECTRONICS</h3>
-                </div>
-            </div>
-        </a>
-        <a href="/category/Groceries" style="text-decoration: none;">
-            <div class="cat-card" style="cursor: pointer; position: relative; border-radius: var(--radius); overflow: hidden; height: 250px;">
-                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&q=80" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" class="cat-img">
-                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">
-                    <h3 style="color: white; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px;">GROCERIES</h3>
-                </div>
-            </div>
-        </a>
+<!-- Overlapping Feature Cards -->
+<div class="container" style="margin-top: -6rem; position: relative; z-index: 10;">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+        <!-- Card 1 -->
+        <div class="card fade-in" style="padding: 2.5rem; border-radius: 0; box-shadow: 0 10px 40px rgba(0,0,0,0.08);">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Easy browsing</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Filter by category, shop, and exact item type to find what you need.</p>
+        </div>
+        <!-- Card 2 -->
+        <div class="card fade-in" style="padding: 2.5rem; border-radius: 0; box-shadow: 0 10px 40px rgba(0,0,0,0.08); animation-delay: 0.1s;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Live Availability</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Check stock status and shop hours before leaving your home.</p>
+        </div>
+        <!-- Card 3 -->
+        <div class="card fade-in" style="padding: 2.5rem; border-radius: 0; box-shadow: 0 10px 40px rgba(0,0,0,0.08); animation-delay: 0.2s;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Local Quality</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Premium pieces, fresh groceries, and electronics verified by local owners.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Shop By Category Section -->
+<div class="container" style="padding-top: 6rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; border-bottom: 1px solid var(--surface-border); padding-bottom: 1rem;">
+        <h2 style="font-size: 2.5rem; font-weight: 400;">Shop By Category</h2>
+        <a href="/shops" style="font-family: var(--font-body); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);">View all</a>
     </div>
     
-    <style>
-        .cat-card:hover .cat-img {
-            transform: scale(1.1);
-        }
-    </style>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+        <a href="/category/Women" class="elegant-cat-card">WOMEN</a>
+        <a href="/category/Men" class="elegant-cat-card">MEN</a>
+        <a href="/category/Electronics" class="elegant-cat-card">ELECTRONICS</a>
+        <a href="/category/Groceries" class="elegant-cat-card">GROCERIES</a>
+    </div>
 </div>
+
+<style>
+    .elegant-cat-card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem 1rem;
+        background: var(--surface);
+        border: 1px solid var(--surface-border);
+        color: var(--text-main);
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .elegant-cat-card:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        box-shadow: var(--shadow-soft);
+        transform: translateY(-2px);
+    }
+</style>
 
 <!-- Product Dashboard (Random Products) -->
 {% if random_products %}
-<div style="margin-top: 6rem;">
-    <div style="text-align: center; margin-bottom: 4rem;">
-        <h2 style="font-size: 2.5rem; font-weight: 950;">Discover Products</h2>
-        <p style="color: var(--text-muted);">Explore featured items from local shops near you.</p>
+<div class="container" style="margin-top: 4rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; border-bottom: 1px solid var(--surface-border); padding-bottom: 1rem;">
+        <h2 style="font-size: 2.5rem; font-weight: 400;">Featured Arrivals</h2>
+        <a href="/search" style="font-family: var(--font-body); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);">View all</a>
     </div>
     
-    <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem;">
         {% for product in random_products %}
-        <a href="/product/{{ product.id }}" style="text-decoration: none; color: inherit; display: block;" class="card fade-in">
-            <div style="border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1.5rem; aspect-ratio: 4/3; background: var(--surface-alt);">
+        <a href="/product/{{ product.id }}" style="text-decoration: none; color: inherit; display: block;" class="fade-in">
+            <div style="background: var(--surface-alt); margin-bottom: 1.5rem; aspect-ratio: 1; overflow: hidden;">
                 {% if product.product_photo %}
-                    <img src="{{ product.product_photo }}" alt="{{ product.product_name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="{{ product.product_photo }}" alt="{{ product.product_name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 {% else %}
-                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 3rem;">📦</div>
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 3rem;">🛍️</div>
                 {% endif %}
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-                <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0;">{{ product.product_name }}</h3>
-                <span style="font-weight: 800; color: var(--primary); font-size: 1.2rem;">₹{{ product.price }}</span>
-            </div>
-            <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                🏪 {{ product.shop_name }}
-            </div>
-            <div style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; 
-                {% if product.status == 'Available' %}background: rgba(16, 185, 129, 0.1); color: var(--success);{% else %}background: rgba(244, 63, 94, 0.1); color: var(--error);{% endif %}">
-                {{ product.status }}
+            <div style="text-align: center;">
+                <h3 style="font-family: var(--font-body); font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">{{ product.product_name }}</h3>
+                <div style="font-family: var(--font-heading); color: var(--primary); font-size: 1.2rem; font-style: italic; margin-bottom: 0.5rem;">₹{{ product.price }}</div>
+                <div style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;">
+                    By {{ product.shop_name }}
+                </div>
             </div>
         </a>
         {% endfor %}
     </div>
 </div>
 {% endif %}
-
-<!-- Key Features -->
-<div style="margin-top: 6rem; text-align: center;">
-    <h2 style="font-size: 2.5rem; font-weight: 950; margin-bottom: 1rem;">Everything You Need</h2>
-    <p style="color: var(--text-muted); margin-bottom: 4rem;">Designed for both modern shoppers and traditional business owners.</p>
-    
-    <div class="grid">
-        <div class="card fade-in" style="text-align: left; padding: 3rem; background: #fff;">
-            <div style="width: 60px; height: 60px; background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center; border-radius: 1rem; font-size: 2rem; margin-bottom: 2rem;">🔍</div>
-            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 800;">Instant Search</h3>
-            <p style="color: var(--text-muted); line-height: 1.6;">Our advanced search engine lets you find products across all local stores instantly. No more walking shop to shop.</p>
-        </div>
-        <div class="card fade-in" style="text-align: left; padding: 3rem; background: #fff; animation-delay: 0.1s;">
-            <div style="width: 60px; height: 60px; background: rgba(16, 185, 129, 0.1); display: flex; align-items: center; justify-content: center; border-radius: 1rem; font-size: 2rem; margin-bottom: 2rem;">💎</div>
-            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 800;">Quality Verified</h3>
-            <p style="color: var(--text-muted); line-height: 1.6;">Check product quality, weight, and detailed descriptions provided directly by shopkeepers before you buy.</p>
-        </div>
-        <div class="card fade-in" style="text-align: left; padding: 3rem; background: #fff; animation-delay: 0.2s;">
-            <div style="width: 60px; height: 60px; background: rgba(244, 63, 94, 0.1); display: flex; align-items: center; justify-content: center; border-radius: 1rem; font-size: 2rem; margin-bottom: 2rem;">⚡</div>
-            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 800;">Real-time Status</h3>
-            <p style="color: var(--text-muted); line-height: 1.6;">Know if a shop is open or closed and if a product is in stock before you leave your home. Save time and effort.</p>
-        </div>
-    </div>
-</div>
-
-<!-- How It Works -->
-<div style="margin-top: 10rem; padding: 6rem; background: var(--surface-alt); border-radius: var(--radius-lg);">
-    <div style="text-align: center; margin-bottom: 5rem;">
-        <h2 style="font-size: 2.5rem; font-weight: 950;">How ShopInfoHub Works</h2>
-        <p style="color: var(--text-muted);">Simple steps to start exploring or growing.</p>
-    </div>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 4rem;">
-        <div style="text-align: center;">
-            <div style="font-size: 1.25rem; font-weight: 900; color: var(--primary); margin-bottom: 1.5rem;">01.</div>
-            <h4 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem;">Create Account</h4>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Join as a Customer to explore or a Shopkeeper to sell.</p>
-        </div>
-        <div style="text-align: center;">
-            <div style="font-size: 1.25rem; font-weight: 900; color: var(--primary); margin-bottom: 1.5rem;">02.</div>
-            <h4 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem;">List or Discover</h4>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Shopkeepers add their stores; Customers find gems.</p>
-        </div>
-        <div style="text-align: center;">
-            <div style="font-size: 1.25rem; font-weight: 900; color: var(--primary); margin-bottom: 1.5rem;">03.</div>
-            <h4 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 1rem;">Connect Locally</h4>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Visit the shop directly for the final purchase.</p>
-        </div>
-    </div>
-</div>
-
 
 {% endblock %}

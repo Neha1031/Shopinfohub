@@ -4,117 +4,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ShopInfoHub | Find Local Shops Easily{% endblock %}</title>
-    <meta name="description" content="Discover local shops, browse catalogs, and check product availability with ShopInfoHub.">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>{% block title %}ShopInfoHub | Premium Local Marketplace{% endblock %}</title>
+    <meta name="description" content="Discover premium local shops, browse luxury catalogs, and check product availability with ShopInfoHub.">
+    <!-- Google Fonts imported in style.css -->
     <!-- Main Style -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏪</text></svg>">
-    <!-- Cropper.js -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 </head>
 
 <body>
-    <!-- Vibrant Background Shapes -->
-    <div class="bg-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-    </div>
-
+    <!-- Luxury Navbar -->
     <nav class="navbar">
-        <a href="/" class="nav-brand">
-            🏪 <span>ShopInfoHub</span>
+        <!-- Logo -->
+        <a href="/" class="logo" style="text-decoration: none;">
+            ShopInfoHub
+            <span>PREMIUM MARKETPLACE</span>
         </a>
+
+        <!-- Central Search Bar -->
+        <div class="search-container">
+            <form action="/search" method="GET" style="display: flex; width: 100%; margin: 0;">
+                <input type="text" name="q" class="search-input" placeholder="Search premium shops or products...">
+                <button type="submit" class="search-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </button>
+            </form>
+        </div>
+
+        <!-- Links -->
         <div class="nav-links">
-            <a href="/shops" class="nav-link">Explore</a>
+            <a href="/shops">Browse Shops</a>
             {% if session.get('email') %}
                 {% if session.get('role') == 'shopkeeper' %}
-                    <a href="/shopkeeper_dashboard" class="btn btn-primary">Dashboard</a>
+                    <a href="/shopkeeper_dashboard" class="btn btn-outline" style="padding: 0.5rem 1.5rem;">Dashboard</a>
                 {% else %}
-                    <a href="/customer_dashboard" class="btn btn-primary">My Dashboard</a>
+                    <a href="/customer_dashboard" class="btn btn-outline" style="padding: 0.5rem 1.5rem;">My Account</a>
                 {% endif %}
-                <div class="user-menu" style="display: flex; align-items: center; gap: 1rem; margin-left: 0.5rem;">
-                    <span style="color: var(--text-muted); font-size: 0.875rem;">{{ session.get('name') }}</span>
-                    <a href="/logout" class="nav-link" style="color: var(--error);">Logout</a>
-                </div>
+                <a href="/logout" style="color: var(--error);">Logout</a>
             {% else %}
-                <a href="/login" class="nav-link">Login</a>
-                <a href="/register" class="btn btn-primary">Get Started</a>
+                <a href="/login">Login</a>
+                <a href="/register" class="btn btn-primary">Sign Up</a>
             {% endif %}
         </div>
     </nav>
 
-    <div class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <ul class="flashes">
-            {% for category, message in messages %}
-            <li class="{{ category }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
+    <!-- Main Content -->
+    <div class="container" style="min-height: 70vh;">
+        <!-- Flash Messages -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
 
         {% block content %}{% endblock %}
     </div>
 
-    <!-- Lightbox for Fullscreen Images -->
-    <div id="lightbox" class="lightbox">
-        <span class="lightbox-close">&times;</span>
-        <img class="lightbox-content" id="lightbox-img">
-    </div>
-
-    <footer style="margin-top: 8rem; padding: 6rem 2rem; background: rgba(255,255,255,0.5); border-top: 1px solid var(--border); text-align: center; border-radius: var(--radius-lg) var(--radius-lg) 0 0;">
-        <div class="nav-brand" style="justify-content: center; margin-bottom: 1.5rem;">
-            🏪 <span>ShopInfoHub</span>
+    <!-- Luxury Footer -->
+    <footer style="margin-top: 5rem; padding: 5rem 2rem; background: var(--surface); border-top: 1px solid var(--surface-border); text-align: center;">
+        <div class="logo" style="margin-bottom: 2rem;">
+            ShopInfoHub
+            <span>PREMIUM MARKETPLACE</span>
         </div>
-        <p style="color: var(--text-muted); font-size: 1rem; max-width: 600px; margin: 0 auto 2.5rem; line-height: 1.8;">
-            Bringing the local marketplace to your fingertips. Empowering small businesses and connecting communities through technology.
-        </p>
-        <div style="color: var(--text-dim); font-size: 0.9rem; font-weight: 500;">
-            &copy; 2026 ShopInfoHub. Crafted with ❤️ for local shops.
+        <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 3rem;">
+            <a href="#" style="color: var(--text-muted); font-size: 0.9rem; letter-spacing: 1px;">ABOUT</a>
+            <a href="#" style="color: var(--text-muted); font-size: 0.9rem; letter-spacing: 1px;">CONTACT</a>
+            <a href="#" style="color: var(--text-muted); font-size: 0.9rem; letter-spacing: 1px;">TERMS</a>
+            <a href="#" style="color: var(--text-muted); font-size: 0.9rem; letter-spacing: 1px;">PRIVACY</a>
+        </div>
+        <div style="color: var(--text-muted); font-size: 0.8rem; letter-spacing: 1px;">
+            &copy; 2026 SHOPINFOHUB. ALL RIGHTS RESERVED.
         </div>
     </footer>
 
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;">
+        <span class="lightbox-close" style="position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer;">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" style="max-width: 90%; max-height: 90%; border: 2px solid var(--primary);">
+    </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Auto-hide flash messages
+            setTimeout(() => {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 300);
+                });
+            }, 5000);
+
+            // Lightbox
             const lightbox = document.getElementById("lightbox");
             const lightboxImg = document.getElementById("lightbox-img");
             const closeBtn = document.querySelector(".lightbox-close");
 
-            // Open Lightbox
             document.querySelectorAll(".zoomable").forEach(image => {
                 image.addEventListener("click", () => {
                     lightboxImg.src = image.src;
-                    lightbox.classList.add("active");
-                    document.body.style.overflow = "hidden"; // Prevent scrolling
+                    lightbox.style.display = "flex";
                 });
             });
 
-            // Close Lightbox
             const closeLightbox = () => {
-                lightbox.classList.remove("active");
-                document.body.style.overflow = "auto";
+                lightbox.style.display = "none";
             };
 
             closeBtn.addEventListener("click", closeLightbox);
             lightbox.addEventListener("click", (e) => {
-                if (e.target === lightbox) {
-                    closeLightbox();
-                }
+                if (e.target === lightbox) closeLightbox();
             });
-
-            // Close on Escape key
             document.addEventListener("keydown", (e) => {
                 if (e.key === "Escape") closeLightbox();
             });
         });
     </script>
-
-    <!-- Cropper.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 </body>
-
 </html>
