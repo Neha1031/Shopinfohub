@@ -556,8 +556,9 @@ def search_products():
     JOIN shops s ON p.shop_id = s.id
     WHERE (
         p.product_name ILIKE %s
-        OR p.details ILIKE %s
+        OR s.details ILIKE %s
         OR s.shop_name ILIKE %s
+        OR s.address ILIKE %s
         OR s.city ILIKE %s
         OR s.area ILIKE %s
     )
@@ -567,7 +568,7 @@ def search_products():
 
     val = f"%{q}%"
 
-    cursor.execute(sql, (val, val, val, val, val))
+    cursor.execute(sql, (val, val, val, val, val, val))
 
     products = cursor.fetchall()
 
@@ -578,5 +579,3 @@ def search_products():
         products=products,
         search_query=q
     )
-
-@app.route('/search_products')
