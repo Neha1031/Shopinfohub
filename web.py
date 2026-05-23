@@ -24,6 +24,8 @@ def get_db_connection():
     except Exception as e:
         print("Database connection error:", e)
         return None
+    
+
 
 def init_db():
     db = get_db_connection()
@@ -539,3 +541,42 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
+@app.route('/search_products')
+def search_products():
+
+    q = request.args.get('q', '')
+
+    db = get_db_connection()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+
+    sql = """
+    SELECT p.*, s.shop_name, s.address
+    FROM products p
+    JOIN shops s ON p.shop_id = s.id
+    WHERE (
+        p.product_name ILIKE %s
+        OR p.details ILIKE %s
+        OR s.shop_name ILIKE %s
+        OR s.city ILIKE %s
+        OR s.area ILIKE %s
+    )
+    AND p.is_deleted = FALSE
+    AND s.is_deleted = FALSE
+    """
+
+    val = f"%{q}%"
+
+    cursor.execute(sql, (val, val, val, val, val))
+
+    products = cursor.fetchall()
+
+    db.close()
+
+    return render_template(
+        'search_products.html',
+        products=products,
+        search_query=q
+    )
+
+@app.route('/search_products')

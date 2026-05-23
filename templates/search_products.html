@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Products</title>
+</head>
+<body>
+
+<h1>Search Results</h1>
+
+{% for p in products %}
+
+<div style="border:1px solid #ccc; padding:20px; margin:20px;">
+
+    <img src="{{ p.product_photo }}" width="200">
+
+    <h2>{{ p.product_name }}</h2>
+
+    <p>₹{{ p.price }}</p>
+
+    <p>{{ p.shop_name }}</p>
+
+    <p>{{ p.address }}</p>
+
+</div>
+
+{% endfor %}
+
+</body>
+</html>
