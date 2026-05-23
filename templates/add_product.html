@@ -45,6 +45,31 @@
                 <input type="text" id="details" name="details" class="form-control" placeholder="Key highlights (e.g. 100% Organic, 1 Year Warranty)">
             </div>
             
+            <!-- Category Selection -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1rem; margin-bottom: 2rem; background: var(--surface-alt); padding: 1.5rem; border-radius: var(--radius-sm); border: 1px dashed var(--border);">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="main_category">Main Category</label>
+                    <select id="main_category" name="main_category" class="form-control" required>
+                        <option value="">Select Main</option>
+                        {% for cat in categories.keys() %}
+                        <option value="{{ cat }}">{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="sub_category">Sub Category</label>
+                    <select id="sub_category" name="sub_category" class="form-control" required disabled>
+                        <option value="">Select Sub</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="item_type">Item Type</label>
+                    <select id="item_type" name="item_type" class="form-control" required disabled>
+                        <option value="">Select Item</option>
+                    </select>
+                </div>
+            </div>
+            
             <!-- 3. Visuals -->
             <div class="form-group" style="background: var(--surface-alt); padding: 2rem; border-radius: var(--radius); border: 1px dashed var(--border);">
                 <label>Product Photo</label>
@@ -112,6 +137,48 @@
 </div>
 
 <script>
+    const categoryData = {{ categories | tojson | safe }};
+    const mainCatSelect = document.getElementById('main_category');
+    const subCatSelect = document.getElementById('sub_category');
+    const itemTypeSelect = document.getElementById('item_type');
+
+    mainCatSelect.addEventListener('change', function() {
+        const main = this.value;
+        subCatSelect.innerHTML = '<option value="">Select Sub</option>';
+        itemTypeSelect.innerHTML = '<option value="">Select Item</option>';
+        itemTypeSelect.disabled = true;
+
+        if (main && categoryData[main]) {
+            subCatSelect.disabled = false;
+            for (const sub in categoryData[main]) {
+                const opt = document.createElement('option');
+                opt.value = sub;
+                opt.textContent = sub;
+                subCatSelect.appendChild(opt);
+            }
+        } else {
+            subCatSelect.disabled = true;
+        }
+    });
+
+    subCatSelect.addEventListener('change', function() {
+        const main = mainCatSelect.value;
+        const sub = this.value;
+        itemTypeSelect.innerHTML = '<option value="">Select Item</option>';
+
+        if (main && sub && categoryData[main][sub]) {
+            itemTypeSelect.disabled = false;
+            categoryData[main][sub].forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                itemTypeSelect.appendChild(opt);
+            });
+        } else {
+            itemTypeSelect.disabled = true;
+        }
+    });
+
     let cropper;
     const imageInput = document.getElementById('product_photo_file');
     const imagePreview = document.getElementById('image_preview');

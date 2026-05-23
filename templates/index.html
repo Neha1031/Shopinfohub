@@ -28,6 +28,100 @@
     </div>
 </div>
 
+<!-- Category Browser -->
+<div class="fade-in" style="margin-top: -3rem; position: relative; z-index: 10; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 3rem; background: #fff; border-radius: var(--radius-lg); box-shadow: 0 20px 40px rgba(0,0,0,0.08);">
+    <h2 style="text-align: center; margin-bottom: 2.5rem; font-size: 2rem; font-weight: 800;">Browse Categories</h2>
+    
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1rem;" id="main-cat-container">
+        {% if categories %}
+            {% for main in categories.keys() %}
+            <button class="btn btn-outline cat-btn main-cat-btn" data-cat="{{ main }}" style="padding: 0.75rem 2rem; font-size: 1.1rem; border-radius: 2rem;">{{ main }}</button>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Subcategories Container -->
+    <div id="sub-cat-container" style="display: none; padding: 2rem; margin-top: 2rem; border-top: 1px solid var(--border); text-align: center;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Select Subcategory</h3>
+        <div id="sub-cat-buttons" style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;"></div>
+    </div>
+
+    <!-- Items Container -->
+    <div id="item-cat-container" style="display: none; padding: 2rem; background: var(--background); border-radius: var(--radius-md); text-align: center; margin-top: 1.5rem;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Select Item Type</h3>
+        <div id="item-cat-buttons" style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;"></div>
+    </div>
+</div>
+
+<script>
+    const categoryData = {{ categories | tojson | safe }};
+    let currentMain = '';
+    let currentSub = '';
+
+    document.querySelectorAll('.main-cat-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Highlight active
+            document.querySelectorAll('.main-cat-btn').forEach(b => {
+                b.classList.remove('btn-primary');
+                b.classList.add('btn-outline');
+            });
+            this.classList.remove('btn-outline');
+            this.classList.add('btn-primary');
+            
+            currentMain = this.getAttribute('data-cat');
+            
+            const subContainer = document.getElementById('sub-cat-container');
+            const subButtons = document.getElementById('sub-cat-buttons');
+            const itemContainer = document.getElementById('item-cat-container');
+            
+            subButtons.innerHTML = '';
+            itemContainer.style.display = 'none';
+            
+            if(categoryData[currentMain]) {
+                for(let sub in categoryData[currentMain]) {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn btn-outline sub-cat-btn';
+                    btn.style.padding = '0.5rem 1.5rem';
+                    btn.style.borderRadius = '2rem';
+                    btn.textContent = sub;
+                    btn.onclick = function() {
+                        document.querySelectorAll('.sub-cat-btn').forEach(b => {
+                            b.classList.remove('btn-primary');
+                            b.classList.add('btn-outline');
+                        });
+                        this.classList.remove('btn-outline');
+                        this.classList.add('btn-primary');
+                        
+                        currentSub = sub;
+                        showItems();
+                    };
+                    subButtons.appendChild(btn);
+                }
+                subContainer.style.display = 'block';
+            }
+        });
+    });
+
+    function showItems() {
+        const itemContainer = document.getElementById('item-cat-container');
+        const itemButtons = document.getElementById('item-cat-buttons');
+        itemButtons.innerHTML = '';
+        
+        if(categoryData[currentMain] && categoryData[currentMain][currentSub]) {
+            categoryData[currentMain][currentSub].forEach(item => {
+                const link = document.createElement('a');
+                link.className = 'btn btn-primary';
+                link.style.padding = '0.5rem 1.5rem';
+                link.style.borderRadius = '2rem';
+                link.textContent = item;
+                link.href = `/search?category=${encodeURIComponent(currentMain)}&sub_category=${encodeURIComponent(currentSub)}&item_type=${encodeURIComponent(item)}`;
+                itemButtons.appendChild(link);
+            });
+            itemContainer.style.display = 'block';
+        }
+    }
+</script>
+
 <!-- Product Dashboard (Random Products) -->
 {% if random_products %}
 <div style="margin-top: 6rem;">

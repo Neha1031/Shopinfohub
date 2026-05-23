@@ -99,35 +99,16 @@ def init_db():
     """)
 
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS shops (
-    id SERIAL PRIMARY KEY,
-    shop_name VARCHAR(255) NOT NULL,
-    owner_name VARCHAR(255) NOT NULL,
-    shop_photo TEXT,
-    address TEXT,
-    map_link VARCHAR(500),
-    description TEXT,
-    user_email VARCHAR(255) NOT NULL,
-    is_open BOOLEAN DEFAULT TRUE,
-    is_deleted BOOLEAN DEFAULT FALSE
-    )
+    ALTER TABLE products
+    ADD COLUMN IF NOT EXISTS main_category VARCHAR(100) DEFAULT 'General'
     """)
-
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS products (
-    id SERIAL PRIMARY KEY,
-    shop_email VARCHAR(255),
-    shop_id INTEGER,
-    product_name VARCHAR(255) NOT NULL,
-    product_photo TEXT,
-    price DECIMAL(10,2),
-    details TEXT,
-    voice_description TEXT,
-    status VARCHAR(100),
-    quantity INTEGER DEFAULT 0,
-    weight VARCHAR(50),
-    quality VARCHAR(100) DEFAULT 'Standard'
-    )
+    ALTER TABLE products
+    ADD COLUMN IF NOT EXISTS sub_category VARCHAR(100) DEFAULT 'General'
+    """)
+    cursor.execute("""
+    ALTER TABLE products
+    ADD COLUMN IF NOT EXISTS item_type VARCHAR(100) DEFAULT 'General'
     """)
 
     db.commit()
@@ -135,6 +116,29 @@ def init_db():
     db.close()
 
 init_db()
+
+CATEGORIES = {
+    "Women": {
+        "Jewellery": ["Earrings", "Necklace", "Anklet", "Rings"],
+        "Clothes": ["Tops", "Dresses", "Sarees", "Kurtis"],
+        "Hair Accessories": ["Clips", "Bands", "Pins"]
+    },
+    "Men": {
+        "Clothes": ["Shirts", "T-Shirts", "Jeans", "Trousers"],
+        "Footwear": ["Sneakers", "Formal", "Sandals"],
+        "Accessories": ["Watches", "Belts", "Wallets"]
+    },
+    "Electronics": {
+        "Mobiles": ["Smartphones", "Feature Phones", "Cases"],
+        "Computers": ["Laptops", "Desktops", "Accessories"],
+        "Audio": ["Headphones", "Earbuds", "Speakers"]
+    },
+    "Groceries": {
+        "Staples": ["Rice", "Flour", "Dal"],
+        "Snacks": ["Chips", "Biscuits", "Namkeen"],
+        "Beverages": ["Tea", "Coffee", "Juices"]
+    }
+}
 
 # Home / Public Dashboard
 @app.route('/')
@@ -154,7 +158,7 @@ def home():
     random_products = cursor.fetchall()
     db.close()
     
-    return render_template('index.html', random_products=random_products)
+    return render_template('index.html', random_products=random_products, categories=CATEGORIES)
 
 # Register
 @app.route('/register', methods=['GET', 'POST'])
@@ -347,6 +351,10 @@ def addproduct(shop_id):
         quantity = request.form.get('quantity', 0)
         weight = request.form.get('weight', '')
         quality = request.form.get('quality', 'Standard')
+        
+        main_category = request.form.get('main_category', 'General')
+        sub_category = request.form.get('sub_category', 'General')
+        item_type = request.form.get('item_type', 'General')
 
         if not quantity:
             quantity = 0
@@ -362,8 +370,9 @@ def addproduct(shop_id):
 
         cursor = db.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
-            "INSERT INTO products(shop_email, shop_id, product_name, product_photo, price, details, voice_description, status, quantity, weight, quality) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-            (session['email'], shop_id, product_name, product_photo, price, details, voice_desc, status, quantity, weight, quality)
+            """INSERT INTO products(shop_email, shop_id, product_name, product_photo, price, details, voice_description, status, quantity, weight, quality, main_category, sub_category, item_type) 
+               VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+            (session['email'], shop_id, product_name, product_photo, price, details, voice_desc, status, quantity, weight, quality, main_category, sub_category, item_type)
         )
         db.commit()
         db.close()
@@ -371,7 +380,7 @@ def addproduct(shop_id):
         return redirect(url_for('manage_shop', shop_id=shop_id))
 
     db.close()
-    return render_template('add_product.html', shop=shop)
+    return render_template('add_product.html', shop=shop, categories=CATEGORIES)
 
 # Toggle Shop Status (Open/Close) specific to shop ID
 @app.route('/toggle_shop_status/<int:shop_id>', methods=['POST'])
@@ -582,36 +591,64 @@ def product_detail(product_id):
 @app.route('/search')
 def search():
     q = request.args.get('q', '')
+    cat = request.args.get('category', '')
+    subcat = request.args.get('sub_category', '')
+    item = request.args.get('item_type', '')
     
-    if not q:
+    if not q and not cat:
         return redirect(url_for('home'))
 
     db = get_db_connection()
     cursor = db.cursor(cursor_factory=RealDictCursor)
 
-    # Search Shops
-    shop_sql = """
-        SELECT * FROM shops
-        WHERE (
-            shop_name ILIKE %s OR address ILIKE %s OR city ILIKE %s OR area ILIKE %s
-        ) AND is_deleted = FALSE
-    """
-    val = f"%{q}%"
-    cursor.execute(shop_sql, (val, val, val, val))
-    shops = cursor.fetchall()
+    shops = []
+    
+    # Only search shops if there is a text query and NO category filters
+    if q and not cat:
+        shop_sql = """
+            SELECT * FROM shops
+            WHERE (
+                shop_name ILIKE %s OR address ILIKE %s OR city ILIKE %s OR area ILIKE %s
+            ) AND is_deleted = FALSE
+        """
+        val = f"%{q}%"
+        cursor.execute(shop_sql, (val, val, val, val))
+        shops = cursor.fetchall()
 
-    # Search Products
-    product_sql = """
+    # Search Products dynamically based on provided filters
+    product_query = """
         SELECT p.*, s.shop_name, s.address 
         FROM products p
         JOIN shops s ON p.shop_id = s.id
-        WHERE (
-            p.product_name ILIKE %s OR p.details ILIKE %s OR s.shop_name ILIKE %s
-        ) AND p.is_deleted = FALSE AND s.is_deleted = FALSE
+        WHERE p.is_deleted = FALSE AND s.is_deleted = FALSE
     """
-    cursor.execute(product_sql, (val, val, val))
+    params = []
+    
+    if q:
+        product_query += " AND (p.product_name ILIKE %s OR p.details ILIKE %s OR s.shop_name ILIKE %s)"
+        val = f"%{q}%"
+        params.extend([val, val, val])
+        
+    if cat:
+        product_query += " AND p.main_category = %s"
+        params.append(cat)
+    if subcat:
+        product_query += " AND p.sub_category = %s"
+        params.append(subcat)
+    if item:
+        product_query += " AND p.item_type = %s"
+        params.append(item)
+
+    cursor.execute(product_query, tuple(params))
     products = cursor.fetchall()
 
     db.close()
 
-    return render_template('search_results.html', query=q, shops=shops, products=products)
+    # Determine display title
+    display_title = q if q else ''
+    if cat:
+        display_title = f"{cat}"
+        if subcat: display_title += f" > {subcat}"
+        if item: display_title += f" > {item}"
+
+    return render_template('search_results.html', query=display_title, shops=shops, products=products)
