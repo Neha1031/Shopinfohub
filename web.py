@@ -292,12 +292,14 @@ def list_shops():
                 OR s.address ILIKE %s
                 OR s.city ILIKE %s
                 OR s.area ILIKE %s
+                OR s.description ILIKE %s
                 OR p.product_name ILIKE %s
+                OR p.details ILIKE %s
             )
             AND s.is_deleted = FALSE
         """
         val = f"%{search_query}%"
-        cursor.execute(sql, (val, val, val, val, val))
+        cursor.execute(sql, (val, val, val, val, val, val, val))
     else:
         cursor.execute("SELECT * FROM shops WHERE is_deleted=FALSE")
         
@@ -531,11 +533,13 @@ def customer_dashboard():
                OR s.address ILIKE %s 
                OR s.city ILIKE %s 
                OR s.area ILIKE %s 
-               OR p.product_name ILIKE %s)
+               OR s.description ILIKE %s
+               OR p.product_name ILIKE %s
+               OR p.details ILIKE %s)
                AND s.is_deleted = FALSE
         """
         val = f"%{search_query}%"
-        cursor.execute(sql, (val, val, val, val, val))
+        cursor.execute(sql, (val, val, val, val, val, val, val))
     else:
         cursor.execute("SELECT * FROM shops WHERE is_deleted=FALSE")
         
@@ -693,11 +697,11 @@ def search():
         shop_sql = """
             SELECT * FROM shops
             WHERE (
-                shop_name ILIKE %s OR address ILIKE %s OR city ILIKE %s OR area ILIKE %s
+                shop_name ILIKE %s OR address ILIKE %s OR city ILIKE %s OR area ILIKE %s OR description ILIKE %s
             ) AND is_deleted = FALSE
         """
         val = f"%{q}%"
-        cursor.execute(shop_sql, (val, val, val, val))
+        cursor.execute(shop_sql, (val, val, val, val, val))
         shops = cursor.fetchall()
 
     # Search Products dynamically based on provided filters
