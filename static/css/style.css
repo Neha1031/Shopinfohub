@@ -363,12 +363,47 @@ a:hover {
     .list-view-product {
         flex-direction: column;
         gap: 1.5rem;
+        padding: 1.5rem !important;
+        overflow: hidden;
+        max-width: 100vw;
+        box-sizing: border-box;
     }
     
     .list-view-product .product-img {
         width: 100%;
         height: auto;
         aspect-ratio: 1;
+    }
+
+    .list-view-product .product-details {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Make buttons and links wrap correctly */
+    .shop-link {
+        flex-wrap: wrap !important;
+        gap: 1rem !important;
+    }
+    
+    .shop-link > div {
+        flex-wrap: wrap !important;
+        width: 100% !important;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+        padding: 0.8rem 1rem !important;
+        white-space: normal !important;
+        box-sizing: border-box;
+    }
+    
+    /* Ensure title and price wrap instead of overflowing */
+    .product-details > div:first-child {
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
     
     .grid-2, .grid-3, .grid-4, .grid-sidebar-reversed, .grid-sidebar { 
