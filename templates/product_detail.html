@@ -86,24 +86,29 @@
         const img = document.getElementById("product-zoom-img");
 
         if(container && img) {
-            container.addEventListener("mousemove", (e) => {
-                const rect = container.getBoundingClientRect();
-                const x = e.clientX - rect.left; 
-                const y = e.clientY - rect.top;  
-                
-                const xPercent = (x / rect.width) * 100;
-                const yPercent = (y / rect.height) * 100;
+            // Check if device supports touch (mobile/tablet)
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
 
-                img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
-                img.style.transform = "scale(2.5)";
-            });
+            if (!isTouchDevice) {
+                container.addEventListener("mousemove", (e) => {
+                    const rect = container.getBoundingClientRect();
+                    const x = e.clientX - rect.left; 
+                    const y = e.clientY - rect.top;  
+                    
+                    const xPercent = (x / rect.width) * 100;
+                    const yPercent = (y / rect.height) * 100;
 
-            container.addEventListener("mouseleave", () => {
-                img.style.transformOrigin = "center center";
-                img.style.transform = "scale(1)";
-            });
+                    img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+                    img.style.transform = "scale(2.5)";
+                });
+
+                container.addEventListener("mouseleave", () => {
+                    img.style.transformOrigin = "center center";
+                    img.style.transform = "scale(1)";
+                });
+            }
             
-            // Allow click to open the full screen lightbox as well
+            // Allow click/tap to open the full screen lightbox on ALL devices
             img.addEventListener("click", () => {
                 const lightbox = document.getElementById("lightbox");
                 const lightboxImg = document.getElementById("lightbox-img");

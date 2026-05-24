@@ -252,6 +252,7 @@ a:hover {
     max-width: 1200px;
     margin: 0 auto;
     padding: 3rem 2rem;
+    overflow-x: hidden;
 }
 
 .card {
@@ -313,18 +314,31 @@ a:hover {
 }
 
 /* Responsive Grid Utilities */
-.grid-2, .grid-3, .grid-4, .grid-sidebar {
+.grid-2, .grid-3, .grid-4, .grid-sidebar, .grid-sidebar-reversed {
     display: grid;
 }
 .grid-2 { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
 .grid-3 { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
 .grid-4 { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
 .grid-sidebar { grid-template-columns: 350px 1fr; gap: 3rem; align-items: start; }
+.grid-sidebar-reversed { grid-template-columns: 1fr 300px; gap: 3rem; align-items: start; }
+
+.hero {
+    position: relative;
+    margin: -3rem -2rem 0 -2rem;
+    padding: 10rem 4rem 12rem 4rem;
+}
+
+.dashboard-hero {
+    margin: -3rem -2rem 4rem -2rem; 
+    padding: 6rem 4rem; 
+    border-radius: 0 0 2rem 2rem;
+}
 
 @media (max-width: 992px) {
     .grid-4 { grid-template-columns: repeat(2, 1fr); }
     .grid-3 { grid-template-columns: repeat(2, 1fr); }
-    .grid-sidebar { grid-template-columns: 1fr; gap: 2rem; }
+    .grid-sidebar, .grid-sidebar-reversed { grid-template-columns: 1fr; gap: 2rem; }
 }
 
 @media (max-width: 768px) {
@@ -357,12 +371,18 @@ a:hover {
         aspect-ratio: 1;
     }
     
-    .grid-2, .grid-3, .grid-4 { 
+    .grid-2, .grid-3, .grid-4, .grid-sidebar-reversed, .grid-sidebar { 
         grid-template-columns: 1fr; 
     }
     
     .hero {
+        margin: -2rem -1.5rem 0 -1.5rem !important;
         padding: 6rem 1.5rem 8rem 1.5rem !important;
+    }
+
+    .dashboard-hero {
+        margin: -2rem -1.5rem 4rem -1.5rem !important;
+        padding: 4rem 1.5rem !important;
     }
     
     .hero h1 {
