@@ -557,6 +557,21 @@ def upgrade_to_shopkeeper():
     flash("Congratulations! You are now a Shopkeeper. You can start creating your shops.", "success")
     return redirect(url_for('shopkeeper_dashboard'))
 
+@app.route('/downgrade_to_customer', methods=['POST'])
+def downgrade_to_customer():
+    if 'email' not in session or session['role'] != 'shopkeeper':
+        return redirect('/login')
+
+    db = get_db_connection()
+    cursor = db.cursor(cursor_factory=RealDictCursor)
+    cursor.execute("UPDATE users SET role='customer' WHERE email=%s", (session['email'],))
+    db.commit()
+    db.close()
+
+    session['role'] = 'customer'
+    flash("You have exited the Business Dashboard and returned to Customer mode.", "success")
+    return redirect(url_for('customer_dashboard'))
+
 @app.route('/logout')
 def logout():
     session.clear()
