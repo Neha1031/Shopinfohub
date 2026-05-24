@@ -527,13 +527,15 @@ def customer_dashboard():
             SELECT DISTINCT s.* 
             FROM shops s
             LEFT JOIN products p ON s.id = p.shop_id
-            WHERE (s.shop_name LIKE %s 
-               OR s.address LIKE %s 
-               OR p.product_name LIKE %s)
+            WHERE (s.shop_name ILIKE %s 
+               OR s.address ILIKE %s 
+               OR s.city ILIKE %s 
+               OR s.area ILIKE %s 
+               OR p.product_name ILIKE %s)
                AND s.is_deleted = FALSE
         """
         val = f"%{search_query}%"
-        cursor.execute(sql, (val, val, val))
+        cursor.execute(sql, (val, val, val, val, val))
     else:
         cursor.execute("SELECT * FROM shops WHERE is_deleted=FALSE")
         
