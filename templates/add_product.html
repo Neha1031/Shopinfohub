@@ -46,7 +46,7 @@
             </div>
             
             <!-- Category Selection -->
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1rem; margin-bottom: 2rem; background: var(--surface-alt); padding: 1.5rem; border-radius: var(--radius-sm); border: 1px dashed var(--border);">
+            <div class="grid-3" style="margin-top: 1rem; margin-bottom: 2rem; background: var(--surface-alt); padding: 1.5rem; border-radius: var(--radius-sm); border: 1px dashed var(--border);">
                 <div class="form-group" style="margin-bottom: 0;">
                     <label for="main_category">Main Category</label>
                     <select id="main_category" name="main_category" class="form-control" required>
@@ -91,7 +91,7 @@
             </div>
             
             <!-- 4. Specifications Grid -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;">
+            <div class="grid-2" style="margin-top: 1rem;">
                 <div class="form-group">
                     <label for="price">Price (₹)</label>
                     <div style="position: relative;">
@@ -109,7 +109,7 @@
                 </div>
             </div>
             
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+            <div class="grid-3">
                 <div class="form-group">
                     <label for="quantity">Stock Qty</label>
                     <input type="number" id="quantity" name="quantity" class="form-control" min="0" placeholder="e.g., 50">

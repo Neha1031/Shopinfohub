@@ -65,7 +65,7 @@
                 <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-muted); font-family: var(--font-body); text-transform: uppercase; letter-spacing: 1.5px;">About this product</h3>
                 <p style="color: var(--text-main); line-height: 1.8; margin-bottom: 2rem; font-size: 1.1rem;">{{ product.details or 'No details provided.' }}</p>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; background: var(--surface-alt); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--surface-border);">
+                <div class="grid-2" style="background: var(--surface-alt); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--surface-border);">
                     <div>
                         <span style="display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Weight</span>
                         <span style="font-weight: 600; font-size: 1.15rem; color: var(--text-main);">{{ product.weight or 'N/A' }}</span>
