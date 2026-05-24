@@ -714,9 +714,9 @@ def search():
     params = []
     
     if q:
-        product_query += " AND (p.product_name ILIKE %s OR p.details ILIKE %s OR s.shop_name ILIKE %s)"
+        product_query += " AND (p.product_name ILIKE %s OR p.details ILIKE %s)"
         val = f"%{q}%"
-        params.extend([val, val, val])
+        params.extend([val, val])
         
     if cat:
         product_query += " AND p.main_category = %s"
