@@ -9,69 +9,70 @@
     </a>
 
     <div class="grid-2" style="align-items: start;">
-        <!-- Product Image -->
-        <div style="border-radius: var(--radius-lg); overflow: hidden; background: var(--surface-alt); aspect-ratio: 4/3; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-            {% if product.product_photo %}
-                <img src="{{ product.product_photo }}" alt="{{ product.product_name }}" class="zoomable" style="width: 100%; height: 100%; object-fit: cover; cursor: zoom-in;">
-            {% else %}
-                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 5rem;">📦</div>
-            {% endif %}
+        <!-- Left Column: Product Image & Shop Info -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <!-- Product Image -->
+            <div style="border-radius: var(--radius-lg); overflow: hidden; background: var(--surface-alt); aspect-ratio: 4/3; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                {% if product.product_photo %}
+                    <img src="{{ product.product_photo }}" alt="{{ product.product_name }}" class="zoomable" style="width: 100%; height: 100%; object-fit: cover; cursor: zoom-in;">
+                {% else %}
+                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 5rem;">📦</div>
+                {% endif %}
+            </div>
+
+            <!-- Shop Info Card -->
+            <div class="card" style="padding: 2.5rem; border-top: 4px solid var(--primary);">
+                <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--text-muted); font-family: var(--font-body); text-transform: uppercase; letter-spacing: 2px;">Sold by</h3>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                    <div>
+                        <div style="font-weight: 400; font-family: var(--font-heading); font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--text-main);">{{ product.shop_name }}</div>
+                        <div style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                            📍 {{ product.address }}
+                            {% if product.area %}<br>{{ product.area }}{% endif %}
+                            {% if product.city %}<br>{{ product.city }}{% endif %}
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <a href="/shop/{{ product.shop_id }}" class="btn btn-primary" style="text-align: center;">Visit Shop</a>
+                        {% if product.map_link %}
+                        <a href="{{ product.map_link }}" target="_blank" class="btn btn-outline" style="border-color: var(--surface-border); text-align: center;">View Map</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Product Details -->
-        <div class="card" style="padding: 3rem; display: flex; flex-direction: column; gap: 2rem;">
+        <!-- Right Column: Product Details -->
+        <div class="card" style="padding: 3rem; display: flex; flex-direction: column; gap: 2.5rem; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.03);">
             <!-- Header (Status, Title, Price) -->
             <div>
-                <div style="display: inline-block; padding: 0.5rem 1.25rem; border-radius: var(--radius-pill); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem;
+                <div style="display: inline-block; padding: 0.5rem 1.5rem; border-radius: var(--radius-pill); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 1.5rem;
                     {% if product.status == 'Available' %}background: rgba(46, 125, 50, 0.1); color: var(--success);{% else %}background: rgba(198, 40, 40, 0.1); color: var(--error);{% endif %}">
                     {{ product.status }}
                 </div>
                 
-                <h1 style="font-size: 3rem; font-weight: 400; margin-bottom: 0.5rem; line-height: 1.2; font-family: var(--font-heading);">{{ product.product_name }}</h1>
+                <h1 style="font-size: 3.5rem; font-weight: 400; margin-bottom: 0.5rem; line-height: 1.2; font-family: var(--font-heading);">{{ product.product_name }}</h1>
                 
                 <div style="font-size: 2.5rem; font-weight: 600; font-family: var(--font-heading); color: var(--primary);">
                     ₹{{ product.price }}
                 </div>
             </div>
 
-            <hr style="border: none; border-top: 1px solid var(--surface-border);">
+            <hr style="border: none; border-top: 1px dashed var(--surface-border);">
 
             <!-- Description -->
             <div>
-                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main); font-family: var(--font-body); text-transform: uppercase; letter-spacing: 1px;">About this product</h3>
-                <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem; font-size: 1.05rem;">{{ product.details or 'No details provided.' }}</p>
+                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-muted); font-family: var(--font-body); text-transform: uppercase; letter-spacing: 1.5px;">About this product</h3>
+                <p style="color: var(--text-main); line-height: 1.8; margin-bottom: 2rem; font-size: 1.1rem;">{{ product.details or 'No details provided.' }}</p>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; background: var(--bg-color); padding: 1.5rem; border-radius: var(--radius);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; background: var(--surface-alt); padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--surface-border);">
                     <div>
-                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.25rem;">Weight</span>
-                        <span style="font-weight: 600; font-size: 1.1rem;">{{ product.weight or 'N/A' }}</span>
+                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Weight</span>
+                        <span style="font-weight: 600; font-size: 1.15rem; color: var(--text-main);">{{ product.weight or 'N/A' }}</span>
                     </div>
                     <div>
-                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.25rem;">Quality</span>
-                        <span style="font-weight: 600; font-size: 1.1rem;">{{ product.quality or 'Standard' }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <hr style="border: none; border-top: 1px solid var(--surface-border);">
-
-            <!-- Shop Info -->
-            <div>
-                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main); font-family: var(--font-body); text-transform: uppercase; letter-spacing: 1px;">Sold by</h3>
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
-                    <div>
-                        <div style="font-weight: 400; font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.25rem; color: var(--primary);">{{ product.shop_name }}</div>
-                        <div style="color: var(--text-muted); font-size: 0.95rem;">
-                            📍 {{ product.address }}
-                            {% if product.area %}, {{ product.area }}{% endif %}
-                            {% if product.city %}, {{ product.city }}{% endif %}
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 1rem; align-items: center;">
-                        <a href="/shop/{{ product.shop_id }}" class="btn btn-primary">Visit Shop</a>
-                        {% if product.map_link %}
-                        <a href="{{ product.map_link }}" target="_blank" class="btn btn-outline" style="border-color: var(--surface-border);">Map</a>
-                        {% endif %}
+                        <span style="display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">Quality</span>
+                        <span style="font-weight: 600; font-size: 1.15rem; color: var(--text-main);">{{ product.quality or 'Standard' }}</span>
                     </div>
                 </div>
             </div>
